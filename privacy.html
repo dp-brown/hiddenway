@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — HiddenWay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf8f5;
+  --white: #ffffff;
+  --stone-900: #1c1917;
+  --stone-600: #57534e;
+  --stone-500: #78716c;
+  --stone-400: #757069;
+  --stone-200: #e7e5e4;
+  --terra: #c4714a;
+  --terra-text: #9d5230;
+  --sans: 'DM Sans', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1714;
+    --white: #201d1a;
+    --stone-900: #f0ebe3;
+    --stone-600: #b0a89e;
+    --stone-500: #9e9590;
+    --stone-400: #969290;
+    --stone-200: #2c2824;
+    --terra-text: #d08258;
+  }
+}
+body { font-family: var(--sans); background: var(--bg); color: var(--stone-900); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+nav { display: flex; align-items: center; padding: 16px 32px; border-bottom: 1px solid var(--stone-200); background: var(--bg); }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.nav-dot { width: 32px; height: 32px; border-radius: 50%; background: var(--terra); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-name { font-weight: 900; font-size: 17px; letter-spacing: -0.5px; }
+main { max-width: 640px; margin: 0 auto; padding: 48px 24px 100px; }
+h1 { font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); letter-spacing: -1px; margin-bottom: 8px; }
+.updated { font-size: 13px; color: var(--stone-400); margin-bottom: 40px; }
+h2 { font-weight: 900; font-size: 1.15rem; letter-spacing: -0.3px; margin: 36px 0 10px; }
+p, li { font-size: 15px; color: var(--stone-600); line-height: 1.7; margin-bottom: 12px; }
+ul { padding-left: 22px; margin-bottom: 12px; }
+a { color: var(--terra-text); }
+.back { display: inline-block; margin-top: 40px; font-size: 14px; font-weight: 700; color: var(--terra-text); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-dot">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+        <path d="M8 3 L8 8 L11 10" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <span class="nav-name">HiddenWay</span>
+  </a>
+</nav>
+
+<main>
+  <h1>Privacy notice</h1>
+  <p class="updated">Last updated: July 2026</p>
+
+  <h2>The short version</h2>
+  <p>Everything you type into HiddenWay is calculated in your browser. Nothing is saved as you use the tool. We don't use cookies, tracking, or analytics scripts. We don't ask for your name or email.</p>
+
+  <h2>What we collect</h2>
+  <p>One thing, and only if you choose to: when you tap Yes or No on the feedback question, we receive your answer along with the income, escape contribution, and tax relief figures from your calculation. This is anonymous — it isn't linked to your name, email, IP address, or any account.</p>
+
+  <h2>How feedback is handled</h2>
+  <ul>
+    <li>Feedback is submitted via Formspree, a form-processing service. Formspree's own <a href="https://formspree.io/legal/privacy-policy/" rel="noopener">privacy policy</a> applies to their processing.</li>
+    <li>Submissions are deleted from Formspree within 30 days.</li>
+    <li>We retain the anonymised figures by email for product analysis — understanding whether the tool helps the people it's built for.</li>
+  </ul>
+
+  <h2>What we never collect</h2>
+  <p>No cookies. No analytics. No advertising trackers. No data brokers. Your calculation inputs never leave your device unless you submit feedback, and even then no identifying information travels with them.</p>
+
+  <h2>If you email us</h2>
+  <p>If you contact <a href="mailto:hiddenwayapp@gmail.com">hiddenwayapp@gmail.com</a>, we'll use your email address only to reply. We won't add you to any list.</p>
+
+  <h2>Your rights</h2>
+  <p>Under UK GDPR you have rights over personal data, including access, correction, and erasure. Because feedback submissions are anonymous, we can't identify which submission is yours — but if you've emailed us, you can ask us to delete that correspondence at any time.</p>
+
+  <h2>Who we are</h2>
+  <p>HiddenWay is an independent tool. Questions about this notice: <a href="mailto:hiddenwayapp@gmail.com">hiddenwayapp@gmail.com</a>.</p>
+
+  <a href="index.html" class="back">← Back to HiddenWay</a>
+</main>
+
+</body>
+</html>

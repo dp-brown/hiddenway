@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HiddenWay — Escape the 60% tax trap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf8f5;
+  --white: #ffffff;
+  --stone-900: #1c1917;
+  --stone-800: #292524;
+  --stone-600: #57534e;
+  --stone-500: #78716c;
+  --stone-400: #757069;
+  --stone-300: #d6d3d1;
+  --stone-200: #e7e5e4;
+  --stone-100: #f5f3f0;
+  --terra: #c4714a;
+  --terra-text: #9d5230;
+  --terra-light: #fde8df;
+  --terra-border: #f4bfa8;
+  --sage-bg: #eef1ec;
+  --sage-dark: #7a9e8a;
+  --sage-btn: #4a7c59;
+  --sage-text: #3f6a4e;
+  --btn-bg: #1c1917;
+  --btn-fg: #ffffff;
+  --warn-bg: #fff3cd;
+  --warn-border: #ffc107;
+  --sans: 'DM Sans', sans-serif;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+}
+
+body { font-family: var(--sans); background: var(--bg); color: var(--stone-900); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+/* ── SKIP LINK ── */
+.skip-link { position: absolute; top: -40px; left: 0; padding: 8px 16px; background: var(--btn-bg); color: var(--btn-fg); font-size: 14px; font-weight: 700; border-radius: 0 0 8px 0; z-index: 9999; transition: top 0.2s; text-decoration: none; }
+.skip-link:focus { top: 0; }
+
+/* ── NAV ── */
+nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid var(--stone-200); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.nav-dot { width: 32px; height: 32px; border-radius: 50%; background: var(--terra); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-name { font-weight: 900; font-size: 17px; letter-spacing: -0.5px; }
+.nav-sub { color: var(--stone-400); font-size: 13px; }
+@media (max-width: 480px) { nav { padding: 14px 20px; } .nav-sub { display: none; } }
+
+/* ── PROGRESS ── */
+.progress-bar-wrap { max-width: 640px; margin: 0 auto; padding: 16px 24px 0; }
+.progress-track { height: 3px; background: var(--stone-200); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--terra); border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+.progress-labels { display: flex; justify-content: space-between; margin-top: 8px; }
+.progress-label { font-size: 11px; font-weight: 600; color: var(--stone-400); letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; }
+.progress-label.active { color: var(--terra-text); }
+
+/* ── HERO ── */
+.hero { text-align: center; padding: 56px 24px 40px; max-width: 640px; margin: 0 auto; }
+.hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: var(--terra-text); text-transform: uppercase; margin-bottom: 18px; }
+.hero h1 { font-weight: 900; font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 16px; }
+.hero-sub { color: var(--stone-500); font-size: 17px; line-height: 1.65; margin-bottom: 28px; max-width: 460px; margin-left: auto; margin-right: auto; }
+.hero-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+.btn-start { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 36px; background: var(--btn-bg); color: var(--btn-fg); border: none; border-radius: 999px; font-family: var(--sans); font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.18); transition: transform 0.15s, box-shadow 0.15s; letter-spacing: -0.3px; }
+.btn-start:hover { transform: scale(1.03); box-shadow: 0 6px 24px rgba(0,0,0,0.24); }
+.btn-start:active { transform: scale(0.98); }
+.btn-start svg { flex-shrink: 0; }
+.hero-pill { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--stone-600); background: var(--white); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--stone-200); box-shadow: var(--shadow-sm); }
+
+/* ── MAIN ── */
+.main { max-width: 640px; margin: 0 auto; padding: 24px 24px 120px; }
+
+/* ── STEP CARDS ── */
+.step-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--stone-200); padding: 36px; margin-bottom: 20px; box-shadow: var(--shadow-sm); transition: box-shadow 0.2s, opacity 0.35s, transform 0.35s; opacity: 0; transform: translateY(14px); scroll-margin-top: 24px; scroll-margin-bottom: 24px; }
+.step-card.entered { opacity: 1; transform: translateY(0); }
+.step-card.active { box-shadow: var(--shadow); border-color: var(--stone-300); }
+.step-card.completed { opacity: 0.55; transform: none; }
+.step-card.completed:hover { opacity: 0.8; cursor: pointer; }
+
+.step-num { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--terra-text); margin-bottom: 8px; }
+.step-q { font-weight: 900; font-size: clamp(1.2rem, 3vw, 1.5rem); letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 6px; }
+.step-hint { font-size: 14px; color: var(--stone-500); margin-bottom: 24px; line-height: 1.55; }
+
+/* Completed answer display */
+.step-answer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.step-answer-val { font-size: 16px; font-weight: 700; color: var(--stone-900); }
+.step-change-btn { font-size: 13px; color: var(--terra-text); background: none; border: none; font-family: var(--sans); cursor: pointer; padding: 0; font-weight: 600; }
+.step-change-btn:hover { text-decoration: underline; }
+
+/* ── CHOICE PILLS ── */
+.choice-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+.choice-pill { padding: 11px 20px; border: 2px solid var(--stone-200); border-radius: 30px; background: var(--white); font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--stone-500); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.choice-pill:hover { border-color: var(--terra); color: var(--terra-text); }
+.choice-pill.active { border-color: var(--terra); background: var(--terra-light); color: var(--terra-text); }
+.choice-pill svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+
+/* ── INPUTS ── */
+.input-field { margin-bottom: 20px; }
+.input-field:last-child { margin-bottom: 0; }
+.input-label { display: block; font-size: 13px; font-weight: 700; color: var(--stone-600); margin-bottom: 8px; letter-spacing: 0.02em; text-transform: uppercase; font-size: 10px; letter-spacing: 0.15em; }
+.input-hint { font-size: 12px; color: var(--stone-400); margin-top: 6px; }
+.input-inner { position: relative; display: flex; align-items: center; }
+.input-pre, .input-suf { position: absolute; font-size: 16px; font-weight: 700; color: var(--stone-400); pointer-events: none; transition: color 0.2s; }
+.input-pre { left: 16px; }
+.input-suf { right: 16px; }
+.big-input { width: 100%; height: 58px; border: 1.5px solid var(--stone-200); border-radius: var(--radius-sm); background: var(--white); color: var(--stone-900); font-family: var(--sans); font-size: 22px; font-weight: 900; letter-spacing: -0.5px; padding: 0 16px 0 38px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; -moz-appearance: textfield; }
+.big-input.no-pre { padding-left: 16px; }
+.big-input.has-suf { padding-right: 40px; }
+.big-input::-webkit-inner-spin-button, .big-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.big-input::placeholder { color: var(--stone-400); font-weight: 400; opacity: 1; }
+.big-input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(196,113,74,0.12); }
+.input-inner:focus-within .input-pre,
+.input-inner:focus-within .input-suf { color: var(--terra); }
+.input-equiv { font-size: 13px; color: var(--stone-500); margin-top: 6px; min-height: 18px; }
+
+/* Salary input with custom +/- */
+.salary-input-row { display: flex; align-items: center; gap: 10px; }
+.salary-adj-btn { flex-shrink: 0; width: 44px; height: 44px; background: var(--sage-bg); color: var(--sage-btn); border: none; border-radius: 10px; font-size: 20px; font-weight: 700; cursor: pointer; font-family: var(--sans); transition: background 0.15s; display: flex; align-items: center; justify-content: center; }
+.salary-adj-btn:hover { background: #dde8dd; }
+.salary-input-wrap { flex: 1; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* Tip lozenge */
+.step-tip { background: var(--sage-bg); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--stone-500); margin-top: 16px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; border: 1px solid #dde8dd; }
+.step-tip-icon { flex-shrink: 0; margin-top: 1px; color: var(--sage-dark); }
+
+/* Trap warning */
+.trap-warn { background: var(--terra-light); border: 1px solid var(--terra-border); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: #7c3a1e; margin-top: 14px; font-weight: 500; line-height: 1.5; display: none; }
+
+/* Continue button */
+.btn-continue { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; background: var(--btn-bg); color: var(--btn-fg); border: none; border-radius: 999px; font-family: var(--sans); font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 24px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.btn-continue:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+.btn-continue:active { transform: scale(0.98); }
+
+/* Optional toggle */
+.optional-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 14px 0; border-top: 1px solid var(--stone-200); margin-top: 4px; }
+.optional-toggle-label { font-size: 14px; font-weight: 600; color: var(--stone-600); }
+.optional-toggle-arrow { font-size: 12px; color: var(--stone-400); transition: transform 0.2s; }
+.optional-toggle-arrow.open { transform: rotate(180deg); }
+.optional-fields { display: none; margin-top: 16px; }
+.optional-fields.visible { display: block; }
+
+/* ── RESULTS ── */
+#results { display: none; margin-top: 8px; }
+#results.show { display: block; }
+
+/* Opportunity card — dark */
+.opp-card { background: var(--stone-900); border-radius: var(--radius); padding: 36px; margin-bottom: 12px; position: relative; overflow: hidden; }
+.opp-card::before { content: ''; position: absolute; top: -80px; right: -80px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(196,113,74,0.15) 0%, transparent 70%); pointer-events: none; }
+.opp-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
+.opp-headline { font-size: clamp(17px, 3vw, 21px); font-weight: 400; color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 16px; }
+.opp-headline strong { font-weight: 900; color: #fff; font-size: 1.2em; letter-spacing: -0.3px; }
+.opp-explain { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; margin-bottom: 0; }
+@media (max-width: 480px) { .opp-card { padding: 24px 20px; } }
+
+/* Slider card */
+.results-slider-card { background: var(--sage-bg); border-radius: var(--radius); padding: 24px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.06); }
+.results-slider-label { font-size: 13px; font-weight: 700; color: var(--stone-600); margin-bottom: 3px; }
+.results-slider-hint { font-size: 12px; color: var(--stone-400); margin-bottom: 18px; }
+.slider-notch-wrap { position: relative; padding-top: 22px; }
+.slider-notch { position: absolute; top: 0; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--terra-text); letter-spacing: 0.05em; white-space: nowrap; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.slider-notch-line { width: 1.5px; height: 8px; background: var(--terra); opacity: 0.6; border-radius: 1px; }
+
+/* Slider factory CSS */
+.slider-wrap { position: relative; padding-top: 44px; padding-bottom: 8px; margin-bottom: 4px; }
+.slider-bubble { position: absolute; top: 0; transform: translateX(-50%); pointer-events: auto; display: flex; flex-direction: column; align-items: center; }
+.slider-bubble span { display: inline-block; background: #1c1917; color: #ffffff; font-size: 15px; font-weight: 800; padding: 6px 13px; border-radius: 8px; white-space: nowrap; letter-spacing: -0.3px; cursor: pointer; user-select: none; }
+.slider-bubble-arrow { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 7px solid #1c1917; }
+.slider-track { position: relative; height: 14px; border-radius: 7px; background: var(--stone-200); }
+.slider-fill { display: none; }
+.slider-thumb { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 26px; height: 26px; border-radius: 50%; background: #1c1917; border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.22); pointer-events: none; transition: left 0.05s; }
+input[type=range].hidden-range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; }
+.slider-labels { display: flex; justify-content: space-between; margin-top: 12px; font-size: 11px; color: var(--stone-400); font-weight: 600; letter-spacing: 0.04em; }
+
+/* Stat cards */
+.results-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+.r-card { background: var(--white); border-radius: 18px; padding: 20px; border: 1px solid var(--stone-200); box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
+.r-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone-400); margin-bottom: 8px; }
+.r-card-val { font-weight: 900; font-size: clamp(1.4rem, 5vw, 1.9rem); letter-spacing: -1px; color: var(--stone-900); line-height: 1; }
+.r-card-sub { font-size: 11px; color: var(--stone-400); margin-top: 5px; }
+
+/* Breakdown */
+.breakdown-wrap { border-radius: 18px; overflow: hidden; border: 1px solid var(--stone-200); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.breakdown-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; background: var(--white); border: none; font-family: var(--sans); cursor: pointer; font-weight: 700; font-size: 14px; color: var(--stone-900); }
+.breakdown-body { display: none; padding: 20px; background: var(--bg); }
+.breakdown-body.open { display: block; }
+.income-bar-wrap { margin-bottom: 16px; }
+.income-bar { height: 28px; border-radius: 8px; overflow: hidden; display: flex; width: 100%; margin-bottom: 4px; }
+.income-bar-seg { height: 100%; transition: width 0.4s ease; }
+.breakdown-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+@media (min-width: 500px) { .breakdown-grid { grid-template-columns: repeat(4, 1fr); } }
+.stat-card { border-radius: 14px; padding: 16px; border: 1px solid var(--stone-200); background: var(--white); }
+.stat-card.bar-match { border-left-width: 3px; padding-left: 14px; }
+.stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone-400); margin-bottom: 6px; }
+.stat-val { font-weight: 900; font-size: 17px; color: var(--stone-900); }
+.stat-sub { font-size: 11px; color: var(--stone-400); margin-top: 3px; }
+.sa-warn { grid-column: 1 / -1; border-radius: 12px; padding: 16px; background: var(--warn-bg); border: 1px solid var(--warn-border); }
+.sa-warn-title { font-weight: 700; color: var(--stone-800); margin-bottom: 4px; font-size: 13px; }
+.sa-warn-body { font-size: 12px; color: var(--stone-600); line-height: 1.5; }
+.disclaimer { grid-column: 1 / -1; border-radius: 12px; padding: 12px; background: var(--stone-100); font-size: 11px; color: var(--stone-400); line-height: 1.5; }
+
+/* Knowing cards */
+.knowing-section { padding: 4px 0; }
+.knowing-item { display: flex; gap: 12px; align-items: flex-start; background: #f0f4f0; border-radius: 14px; padding: 16px; border: 1px solid #dde8dd; margin-bottom: 8px; }
+.knowing-icon { flex-shrink: 0; width: 22px; height: 22px; margin-top: 1px; color: var(--sage-dark); }
+.knowing-title { font-weight: 700; font-size: 13px; color: var(--stone-900); margin-bottom: 3px; }
+.knowing-body { font-size: 12px; color: var(--stone-500); line-height: 1.55; }
+
+/* CTA card */
+.cta-card { background: #f0ece6; border-radius: var(--radius); padding: 32px 28px; text-align: center; margin-bottom: 12px; border: 1px solid #e0d8cf; }
+.cta-card-text { font-size: 15px; color: var(--stone-600); line-height: 1.7; margin-bottom: 24px; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+/* Feedback card */
+.feedback-card { background: #f0ece6; border-radius: var(--radius); padding: 32px 28px; text-align: center; margin-bottom: 20px; border: 1px solid #e0d8cf; }
+.feedback-q { font-size: 16px; font-weight: 700; color: var(--stone-900); margin-bottom: 6px; }
+.feedback-hint { font-size: 13px; color: var(--stone-500); margin-bottom: 24px; }
+.feedback-btns { display: flex; gap: 12px; justify-content: center; }
+.feedback-btn { display: flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 999px; font-family: var(--sans); font-size: 15px; font-weight: 700; cursor: pointer; border: 2px solid var(--stone-300); background: var(--white); color: var(--stone-600); transition: all 0.18s; }
+.feedback-btn:hover { border-color: var(--stone-900); color: var(--stone-900); }
+.feedback-btn.yes:hover, .feedback-btn.yes.selected { border-color: var(--sage-btn); background: #eef6f1; color: var(--sage-text); }
+.feedback-btn.no:hover, .feedback-btn.no.selected { border-color: var(--terra); background: var(--terra-light); color: var(--terra-text); }
+.feedback-thanks { font-size: 14px; color: var(--stone-500); margin-top: 20px; display: none; line-height: 1.6; }
+.feedback-thanks.visible { display: block; }
+
+/* Footer */
+.page-footer { border-top: 1px solid var(--stone-200); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: var(--bg); max-width: 100%; }
+.footer-brand { display: flex; flex-direction: column; gap: 4px; }
+.footer-brand-row { display: flex; align-items: center; gap: 8px; }
+.footer-brand-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--terra); flex-shrink: 0; }
+.footer-brand-name { font-weight: 700; font-size: 14px; }
+.footer-tagline { font-size: 12px; color: var(--stone-400); padding-left: 24px; }
+.footer-links { display: flex; gap: 24px; }
+.footer-link { font-size: 13px; color: var(--stone-600); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.footer-link:hover { color: var(--stone-900); }
+.footer-copy { font-size: 12px; color: var(--stone-400); width: 100%; }
+@media (max-width: 600px) { .page-footer { flex-direction: column; align-items: flex-start; padding: 20px; } .footer-links { gap: 16px; } }
+
+/* ── DARK MODE ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1714;
+    --white: #201d1a;
+    --stone-900: #f0ebe3;
+    --stone-800: #e0d8cc;
+    --stone-600: #b0a89e;
+    --stone-500: #9e9590;
+    --stone-400: #969290;
+    --stone-300: #3a3530;
+    --stone-200: #2c2824;
+    --stone-100: #201d19;
+    --terra-text: #d08258;
+    --sage-text: #8fb89d;
+    --btn-bg: #f0ebe3;
+    --btn-fg: #1c1917;
+    --sage-bg: #1c201c;
+    --terra-light: #2d1a12;
+    --terra-border: #5c3020;
+    --warn-bg: #2a2000;
+    --warn-border: #7a6000;
+  }
+  nav { background: var(--bg); border-bottom-color: var(--stone-200); }
+  .choice-pill { background: var(--stone-200); border-color: var(--stone-300); }
+  .choice-pill.active { background: var(--terra-light); }
+  .big-input { background: var(--stone-200); border-color: var(--stone-300); color: var(--stone-900); }
+  .big-input::placeholder { color: var(--stone-400); }
+  .step-card { background: var(--white); border-color: var(--stone-200); }
+  .r-card { background: var(--white); border-color: var(--stone-200); }
+  .breakdown-toggle { background: var(--white); color: var(--stone-900); }
+  .breakdown-body { background: var(--bg); }
+  .stat-card { background: var(--white); }
+  .knowing-item { background: #1a211a; border-color: #2a3a2a; }
+  .cta-card { background: #211e1a; border-color: var(--stone-200); }
+  .email-input { background: var(--stone-200); border-color: var(--stone-300); color: var(--stone-900); }
+  .salary-adj-btn { background: #1c201c; color: #7a9e8a; }
+  .salary-adj-btn:hover { background: #242a24; }
+  .results-slider-card { background: var(--sage-bg); border-color: rgba(255,255,255,0.05); }
+  .opp-card { background: #111210; }
+  .page-footer { background: var(--bg); border-top-color: var(--stone-200); }
+}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div id="main-content" tabindex="-1" style="outline:none;"></div>
+
+<nav>
+  <a href="#" class="nav-logo" onclick="resetForm(); return false;">
+    <div class="nav-dot">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+        <path d="M8 3 L8 8 L11 10" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <span class="nav-name">HiddenWay</span>
+    <span class="nav-sub">Escape the 60% tax trap</span>
+  </a>
+</nav>
+
+<div class="progress-bar-wrap" id="progress-wrap" style="display:none">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-labels">
+    <span class="progress-label active" id="pl-income">Your income</span>
+    <span class="progress-label" id="pl-other">Other income</span>
+    <span class="progress-label" id="pl-pension">Your pension</span>
+    <span class="progress-label" id="pl-results">Results</span>
+  </div>
+</div>
+
+<!-- ── HERO ── -->
+<div class="hero" id="hero-section">
+  <p class="hero-eyebrow">The 60% tax trap — explained and escaped</p>
+  <h1>Most people guess.<br>You don't have to.</h1>
+  <p class="hero-sub">See exactly where you stand, where you're going, and what it'll actually cost you. All in two minutes.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      No sign-up
+    </span>
+    <span class="hero-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Nothing saved
+    </span>
+    <span class="hero-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Completely free
+    </span>
+  </div>
+  <button class="btn-start" onclick="startTool()" id="btn-start">
+    Find my escape number
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </button>
+</div>
+
+<div id="form-anchor"></div>
+<div class="main" id="main-form">
+
+  <!-- ── STEP 1: HOW DO YOU EARN ── -->
+  <div class="step-card" id="step1" tabindex="-1">
+    <div class="step-num">Step 1 of 5</div>
+    <div class="step-q">How do you earn?</div>
+    <div class="step-hint">This affects how your tax relief is calculated.</div>
+    <div class="choice-group">
+      <button class="choice-pill active" id="earn-paye" onclick="setEarningType('paye')" aria-pressed="true">
+        <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+        Employed
+      </button>
+      <button class="choice-pill" id="earn-self" onclick="setEarningType('self')" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Self-employed
+      </button>
+      <button class="choice-pill" id="earn-both" onclick="setEarningType('both')" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Both
+      </button>
+    </div>
+    <div id="step1-answer-row" class="step-answer-row" style="display:none">
+      <span class="step-answer-val" id="step1-answer"></span>
+      <button class="step-change-btn" onclick="editStep(1)">Change</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: YOUR INCOME ── -->
+  <div class="step-card" id="step2" tabindex="-1">
+    <div class="step-num">Step 2 of 5</div>
+    <div class="step-q" id="step2-q">What's your annual income?</div>
+    <div class="step-hint" id="step2-hint">A ballpark is fine — we round to the nearest £1,000.</div>
+
+    <!-- PAYE fields -->
+    <div id="paye-fields">
+      <div class="input-field">
+        <div class="input-label">Annual salary</div>
+        <div class="salary-input-row">
+          <button class="salary-adj-btn" onclick="adjustSalary(-1000)" aria-label="Decrease by £1,000">−</button>
+          <div class="salary-input-wrap">
+            <div class="input-inner">
+              <span class="input-pre">£</span>
+              <input type="number" class="big-input" id="salary-input" inputmode="numeric" placeholder="100,000" aria-label="Annual salary in pounds" oninput="onSalaryChange()">
+            </div>
+          </div>
+          <button class="salary-adj-btn" onclick="adjustSalary(1000)" aria-label="Increase by £1,000">+</button>
+        </div>
+        <div class="trap-warn" id="trap-warn">⚡ Your income is in the 60% trap zone. HMRC is quietly removing your personal allowance. This tool shows you exactly how to escape.</div>
+      </div>
+    </div>
+
+    <!-- Self-employed fields -->
+    <div id="self-fields" style="display:none">
+      <div class="input-field">
+        <div class="input-label">Annual profit <span style="font-weight:400;color:var(--stone-400)">(after expenses, before tax)</span></div>
+        <div class="input-inner">
+          <span class="input-pre">£</span>
+          <input type="number" class="big-input" id="self-income" inputmode="numeric" placeholder="100,000" aria-label="Annual self-employment profit in pounds" oninput="onSelfIncomeChange()">
+        </div>
+        <div class="trap-warn" id="trap-warn-self">⚡ Your income is in the 60% trap zone. HMRC is quietly removing your personal allowance. This tool shows you exactly how to escape.</div>
+      </div>
+    </div>
+
+    <!-- Both fields -->
+    <div id="both-fields" style="display:none">
+      <div class="grid-2">
+        <div class="input-field">
+          <div class="input-label">Employed salary</div>
+          <div class="input-inner">
+            <span class="input-pre">£</span>
+            <input type="number" class="big-input" id="both-salary" inputmode="numeric" placeholder="60,000" aria-label="Annual employed salary in pounds" oninput="onBothChange()">
+          </div>
+        </div>
+        <div class="input-field">
+          <div class="input-label">Self-employment profit</div>
+          <div class="input-inner">
+            <span class="input-pre">£</span>
+            <input type="number" class="big-input" id="both-self" inputmode="numeric" placeholder="40,000" aria-label="Annual self-employment profit in pounds" oninput="onBothChange()">
+          </div>
+        </div>
+      </div>
+      <div class="trap-warn" id="trap-warn-both">⚡ Your combined income is in the 60% trap zone. HMRC is quietly removing your personal allowance. This tool shows you exactly how to escape.</div>
+    </div>
+
+    <div class="step-tip">
+      <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
+      <span>The trap applies to income between £100,000 and £125,140. If you're outside this range the tool still works — you'll just see standard higher-rate relief.</span>
+    </div>
+
+    <div id="step2-answer-row" class="step-answer-row" style="display:none">
+      <span class="step-answer-val" id="step2-answer"></span>
+      <button class="step-change-btn" onclick="editStep(2)">Change</button>
+    </div>
+    <button class="btn-continue" id="step2-continue" onclick="completeStep(2)" style="display:none">Continue</button>
+  </div>
+
+  <!-- ── STEP 3: OTHER INCOME (optional) ── -->
+  <div class="step-card" id="step3" tabindex="-1">
+    <div class="step-num">Step 3 of 5</div>
+    <div class="step-q">Any other income?</div>
+    <div class="step-hint">Dividends, savings interest, rental income. Skip if it's just your salary — you can always come back.</div>
+
+    <div class="optional-toggle" id="other-income-toggle" onclick="toggleOtherIncome()">
+      <span class="optional-toggle-label">Add other income</span>
+      <span class="optional-toggle-arrow" id="other-income-arrow">↓</span>
+    </div>
+    <div class="optional-fields" id="other-income-fields">
+      <div class="grid-2" style="margin-top:0">
+        <div class="input-field">
+          <div class="input-label">Dividends</div>
+          <div class="input-inner">
+            <span class="input-pre">£</span>
+            <input type="number" class="big-input" id="dividends-input" inputmode="numeric" placeholder="0" aria-label="Annual dividend income in pounds" oninput="S.dividends = parseFloat(this.value)||0">
+          </div>
+          <div class="input-hint">First £500 tax-free</div>
+        </div>
+        <div class="input-field">
+          <div class="input-label">Savings interest</div>
+          <div class="input-inner">
+            <span class="input-pre">£</span>
+            <input type="number" class="big-input" id="savings-input" inputmode="numeric" placeholder="0" aria-label="Annual savings interest in pounds" oninput="S.savings = parseFloat(this.value)||0">
+          </div>
+          <div class="input-hint">PSA applied automatically</div>
+        </div>
+        <div class="input-field">
+          <div class="input-label">Rental income</div>
+          <div class="input-inner">
+            <span class="input-pre">£</span>
+            <input type="number" class="big-input" id="rental-input" inputmode="numeric" placeholder="0" aria-label="Annual rental income before expenses in pounds" oninput="S.rental = parseFloat(this.value)||0">
+          </div>
+          <div class="input-hint">Before expenses</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="step3-answer-row" class="step-answer-row" style="display:none">
+      <span class="step-answer-val" id="step3-answer"></span>
+      <button class="step-change-btn" onclick="editStep(3)">Change</button>
+    </div>
+    <button class="btn-continue" id="step3-continue" onclick="completeStep(3)">Continue</button>
+  </div>
+
+  <!-- ── STEP 4: PENSION ── -->
+  <div class="step-card" id="step4" tabindex="-1">
+    <div class="step-num">Step 4 of 5</div>
+    <div class="step-q">What are your current pension contributions?</div>
+    <div class="step-hint">Your contribution — as a % of salary or a fixed annual amount.</div>
+
+    <div style="display:flex;gap:0;margin-bottom:16px;">
+      <button class="contrib-mode-btn active" id="mode-pct" onclick="setContribMode('pct')" style="flex:1;height:36px;border:1.5px solid var(--stone-200);background:var(--stone-900);color:#fff;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;border-radius:8px 0 0 8px;border-right:none;">% of salary</button>
+      <button class="contrib-mode-btn" id="mode-gbp" onclick="setContribMode('gbp')" style="flex:1;height:36px;border:1.5px solid var(--stone-200);background:var(--white);color:var(--stone-500);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;border-radius:0 8px 8px 0;">£ amount</button>
+    </div>
+
+    <div class="input-field" id="contrib-pct-field">
+      <div class="input-label">Your contribution</div>
+      <div class="input-inner">
+        <input type="number" class="big-input no-pre has-suf" id="contrib-pct" inputmode="numeric" placeholder="5" min="0" max="100" aria-label="Your pension contribution as a percentage of salary" oninput="onContribChange()">
+        <span class="input-suf">%</span>
+      </div>
+      <div class="input-equiv" id="contrib-equiv"></div>
+    </div>
+    <div class="input-field" id="contrib-gbp-field" style="display:none">
+      <div class="input-label">Your contribution</div>
+      <div class="input-inner">
+        <span class="input-pre">£</span>
+        <input type="number" class="big-input" id="contrib-gbp" inputmode="numeric" placeholder="5000" aria-label="Your annual pension contribution in pounds" oninput="onContribGbpChange()">
+      </div>
+    </div>
+
+    <!-- Employer contribution — shown for employed/both only -->
+    <div id="employer-field" style="display:none;margin-top:4px;">
+      <div class="input-field">
+        <div class="input-label">Employer contribution <span style="font-weight:400;color:var(--stone-400)">(optional)</span></div>
+        <div class="input-inner">
+          <input type="number" class="big-input no-pre has-suf" id="employer-pct" inputmode="numeric" placeholder="3" min="0" max="30" aria-label="Employer pension contribution as a percentage of salary" oninput="S.employerContrib = parseFloat(this.value)||0">
+          <span class="input-suf">%</span>
+        </div>
+        <div class="input-hint">Check your scheme rules — some employers only contribute if you do.</div>
+      </div>
+    </div>
+
+    <div class="step-tip">
+      <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
+      <span>Not sure? Even a rough number gives you a useful projection. You can adjust it in the results.</span>
+    </div>
+
+    <div id="step4-answer-row" class="step-answer-row" style="display:none">
+      <span class="step-answer-val" id="step4-answer"></span>
+      <button class="step-change-btn" onclick="editStep(4)">Change</button>
+    </div>
+    <button class="btn-continue" id="step4-continue" onclick="completeStep(4)">Continue</button>
+  </div>
+
+  <!-- ── STEP 5: POT + YEARS ── -->
+  <div class="step-card" id="step5" tabindex="-1">
+    <div class="step-num">Step 5 of 5</div>
+    <div class="step-q">Your pension so far</div>
+    <div class="step-hint">Rough figures are fine — this helps project your pot at retirement.</div>
+    <div class="grid-2">
+      <div class="input-field">
+        <div class="input-label">Existing pot</div>
+        <div class="input-inner">
+          <span class="input-pre">£</span>
+          <input type="number" class="big-input" id="pot-input" inputmode="numeric" placeholder="0" aria-label="Existing pension pot value in pounds" oninput="S.existingPot = parseFloat(this.value)||0">
+        </div>
+        <div class="input-hint">Across all pensions</div>
+      </div>
+      <div class="input-field">
+        <div class="input-label">Years to retirement</div>
+        <div class="input-inner">
+          <input type="number" class="big-input no-pre has-suf" id="years-input" inputmode="numeric" placeholder="20" min="1" max="50" aria-label="Years until retirement" oninput="S.years = parseInt(this.value)||20">
+          <span class="input-suf">yrs</span>
+        </div>
+        <div class="input-hint">When you'd like the option to stop</div>
+      </div>
+    </div>
+    <div class="step-tip">
+      <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
+      <span>You can access your pension from age 57 (rising to 58 by 2028).</span>
+    </div>
+    <button class="btn-continue" onclick="showResults()">See my results</button>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div id="results">
+
+    <!-- aria-live for screen readers -->
+    <div id="r-live" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;"></div>
+
+    <!-- Opportunity card -->
+    <div class="opp-card">
+      <p class="opp-eyebrow">Here's your opportunity</p>
+      <p class="opp-headline" id="r-headline">—</p>
+      <p class="opp-explain" id="r-explain-1">—</p>
+    </div>
+
+    <!-- Slider -->
+    <div class="results-slider-card">
+      <div class="results-slider-label">Model your contribution</div>
+      <div class="results-slider-hint">Drag to explore. Everything updates live.</div>
+      <div class="slider-notch-wrap">
+        <div class="slider-notch" id="r-escape-notch" style="display:none">
+          <span id="r-escape-notch-label"></span>
+          <div class="slider-notch-line"></div>
+        </div>
+        <div class="slider-notch" id="r-current-notch" style="display:none">
+          <span id="r-current-notch-label" style="font-size:9px;font-weight:700;letter-spacing:0.05em;white-space:nowrap;color:var(--stone-400)"></span>
+          <div class="slider-notch-line" style="background:var(--stone-400)"></div>
+        </div>
+        <div id="results-slider-wrap"></div>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="results-cards">
+      <div class="r-card"><div class="r-card-label" id="rc-label-1">Take-home</div><div class="r-card-val" id="rc-val-1">—</div><div class="r-card-sub" id="rc-sub-1">per month</div></div>
+      <div class="r-card"><div class="r-card-label" id="rc-label-2">Personal allowance</div><div class="r-card-val" id="rc-val-2">—</div><div class="r-card-sub" id="rc-sub-2">—</div></div>
+      <div class="r-card"><div class="r-card-label" id="rc-label-3">Employer contribution</div><div class="r-card-val" id="rc-val-3">—</div><div class="r-card-sub" id="rc-sub-3">—</div></div>
+      <div class="r-card"><div class="r-card-label" id="rc-label-4">Projected pot</div><div class="r-card-val" id="rc-val-4">—</div><div class="r-card-sub" id="rc-sub-4">at retirement</div></div>
+    </div>
+
+    <!-- Insight cards (collapsed) -->
+    <div class="breakdown-wrap">
+      <button class="breakdown-toggle" onclick="toggleKnowing()">
+        <span>What this means for you</span>
+        <span id="r-knowing-arrow" style="font-weight:400;color:var(--stone-400)">↓ Show</span>
+      </button>
+      <div class="breakdown-body" id="r-knowing-body">
+        <div class="knowing-section" id="r-knowing"></div>
+      </div>
+    </div>
+
+    <!-- Full breakdown (collapsed) -->
+    <div class="breakdown-wrap">
+      <button class="breakdown-toggle" onclick="toggleBreakdown()">
+        <span>Full tax breakdown</span>
+        <span id="r-breakdown-arrow" style="font-weight:400;color:var(--stone-400)">↓ Show detail</span>
+      </button>
+      <div class="breakdown-body" id="r-breakdown-body">
+        <div class="income-bar-wrap" id="r-income-bar-wrap"></div>
+        <div class="breakdown-grid" id="r-breakdown-grid"></div>
+      </div>
+    </div>
+
+    <!-- CTA text -->
+    <div class="cta-card" style="margin-bottom:12px;">
+      <p class="cta-card-text" id="r-cta-text">—</p>
+    </div>
+
+    <!-- Feedback -->
+    <div class="feedback-card" id="feedback-card">
+      <p class="feedback-q">Did HiddenWay help you understand the 60% trap?</p>
+      <p class="feedback-hint">Takes one tap. Helps us improve.</p>
+      <div class="feedback-btns">
+        <button class="feedback-btn yes" onclick="submitFeedback('yes')" aria-label="Yes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Yes
+        </button>
+        <button class="feedback-btn no" onclick="submitFeedback('no')" aria-label="No">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          No
+        </button>
+      </div>
+      <p class="feedback-thanks" id="feedback-thanks">Thanks — that's useful. If something wasn't clear, we'd love to know. <a href="mailto:hiddenwayapp@gmail.com" style="color:var(--stone-500);text-decoration:underline;">hiddenwayapp@gmail.com</a></p>
+      <input type="hidden" id="fb-salary">
+      <input type="hidden" id="fb-escape">
+      <input type="hidden" id="fb-relief">
+    </div>
+
+  </div><!-- /results -->
+</div><!-- /main -->
+
+<footer class="page-footer">
+  <div class="footer-brand">
+    <div class="footer-brand-row">
+      <div class="footer-brand-dot"></div>
+      <span class="footer-brand-name">HiddenWay</span>
+    </div>
+    <span class="footer-tagline">Illustrative only — not financial advice.</span>
+  </div>
+  <div class="footer-links">
+    <a href="privacy.html" class="footer-link">Privacy</a>
+    <a href="#" class="footer-link">Methodology</a>
+  </div>
+  <p class="footer-copy">© 2026 HiddenWay. Based on 2026/27 HMRC rates for England &amp; Wales.</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const S = {
+  earningType: 'paye',
+  salary: 0,
+  selfIncome: 0,
+  bothSalary: 0,
+  bothSelf: 0,
+  dividends: 0,
+  savings: 0,
+  rental: 0,
+  contribMode: 'pct',
+  contribPct: 0,
+  contribGbp: 0,
+  employerContrib: 0,
+  existingPot: 0,
+  years: 20,
+  sliderContrib: 0,
+  // Scotland toggle — hidden from UI but preserved for future use
+  region: 'ew',
+};
+
+// Active step tracking
+let activeStep = 1;
+let breakdownOpen = false;
+let knowingOpen = false;
+
+// ═══════════════════════════════════════════
+// TAX ENGINE (2026/27 E&W)
+// ═══════════════════════════════════════════
+const TAX = {
+  pa: 12570, basicLimit: 50270, higherLimit: 125140,
+  basic: 0.20, higher: 0.40, additional: 0.45,
+  divAllowance: 500, divBasic: 0.1075, divHigher: 0.3575, divAdditional: 0.3935,
+  psaHigher: 500, psaBasic: 1000,
+  niThresh: 12570, niUEL: 50270, ni1: 0.08, ni2: 0.02,
+};
+
+// Scotland rates — kept in code, not exposed in UI yet
+const TAX_SCOT = {
+  pa: 12570, higherLimit: 125140, additional: 0.48,
+  bands: [
+    { from: 0,     to: 2306,   rate: 0.19 },
+    { from: 2306,  to: 13991,  rate: 0.20 },
+    { from: 13991, to: 31092,  rate: 0.21 },
+    { from: 31092, to: 62430,  rate: 0.42 },
+    { from: 62430, to: 125140, rate: 0.45 },
+    { from: 125140,to: Infinity,rate: 0.48 },
+  ],
+};
+
+function getPA(income) {
+  if (income <= 100000) return TAX.pa;
+  return Math.max(0, TAX.pa - Math.floor((income - 100000) / 2));
+}
+
+function incomeTax(taxable, pa) {
+  if (taxable <= 0) return 0;
+  const above = Math.max(0, taxable - pa);
+  const b = Math.min(above, TAX.basicLimit - pa) * TAX.basic;
+  const h = Math.min(Math.max(0, above - (TAX.basicLimit - pa)), TAX.higherLimit - TAX.basicLimit) * TAX.higher;
+  const a = Math.max(0, above - (TAX.higherLimit - pa)) * TAX.additional;
+  return b + h + a;
+}
+
+function calcNI(salary) {
+  if (salary <= TAX.niThresh) return 0;
+  const b1 = Math.min(salary - TAX.niThresh, TAX.niUEL - TAX.niThresh) * TAX.ni1;
+  const b2 = Math.max(0, salary - TAX.niUEL) * TAX.ni2;
+  return b1 + b2;
+}
+
+function getGrossSalary() {
+  if (S.earningType === 'paye') return S.salary;
+  if (S.earningType === 'self') return S.selfIncome;
+  return S.bothSalary + S.bothSelf;
+}
+
+function runEngine({ salary, empContrib, employerPct, dividends, savings, rental }) {
+  const gross = salary + (dividends||0) + (savings||0) + (rental||0);
+  const nonSavings = Math.max(0, salary + (rental||0) - empContrib);
+  const taxable = Math.max(0, gross - empContrib);
+  const pa = getPA(taxable);
+
+  const nonSavingsTaxable = Math.max(0, nonSavings - pa);
+  const nsBasic = Math.min(nonSavingsTaxable, TAX.basicLimit - pa);
+  const nsHigher = Math.min(Math.max(0, nonSavingsTaxable - (TAX.basicLimit - pa)), TAX.higherLimit - TAX.basicLimit);
+  const nsAdditional = Math.max(0, nonSavingsTaxable - (TAX.higherLimit - pa));
+  const nonSavingsItax = nsBasic * TAX.basic + nsHigher * TAX.higher + nsAdditional * TAX.additional;
+
+  const savingsAmt = savings || 0;
+  const paUsedByNonSavings = Math.min(pa, nonSavings);
+  const remainingPA = Math.max(0, pa - paUsedByNonSavings);
+  const savingsAbovePA = Math.max(0, savingsAmt - remainingPA);
+  const nonSavingsAbovePA = Math.max(0, nonSavings - pa);
+  const basicRemainingAfterNonSavings = Math.max(0, (TAX.basicLimit - pa) - nonSavingsAbovePA);
+  const psa = nonSavings <= TAX.basicLimit ? TAX.psaBasic : nonSavings <= TAX.higherLimit ? TAX.psaHigher : 0;
+  const savingsTaxable = Math.max(0, savingsAbovePA - psa);
+  const savingsInBasic = Math.min(savingsTaxable, basicRemainingAfterNonSavings);
+  const savingsInHigher = Math.min(Math.max(0, savingsTaxable - basicRemainingAfterNonSavings), TAX.higherLimit - TAX.basicLimit);
+  const savingsInAdditional = Math.max(0, savingsTaxable - basicRemainingAfterNonSavings - (TAX.higherLimit - TAX.basicLimit));
+  const st = savingsInBasic * TAX.basic + savingsInHigher * TAX.higher + savingsInAdditional * TAX.additional;
+
+  const incomeBeforeDivs = nonSavings + savingsAmt;
+  const incomeAbovePABeforeDivs = Math.max(0, incomeBeforeDivs - pa);
+  const remBasicForDivs = Math.max(0, (TAX.basicLimit - pa) - incomeAbovePABeforeDivs);
+  const remHigherForDivs = Math.max(0, TAX.higherLimit - Math.max(TAX.basicLimit, pa + incomeAbovePABeforeDivs));
+  const divTaxable = Math.max(0, (dividends||0) - TAX.divAllowance);
+  const dt = divTaxable > 0
+    ? Math.min(divTaxable, remBasicForDivs) * TAX.divBasic
+      + Math.min(Math.max(0, divTaxable - remBasicForDivs), remHigherForDivs) * TAX.divHigher
+      + Math.max(0, divTaxable - remBasicForDivs - remHigherForDivs) * TAX.divAdditional
+    : 0;
+
+  const ni = calcNI(S.earningType === 'self' ? 0 : salary);
+  const totalTax = nonSavingsItax + st + dt + ni;
+  const takeHome = gross - empContrib - totalTax;
+
+  let relief = 0;
+  if (taxable > 100000) {
+    const origPA = getPA(taxable + empContrib);
+    const origTax = incomeTax(taxable + empContrib, origPA);
+    const redPA = getPA(taxable);
+    const redTax = incomeTax(taxable, redPA);
+    relief = origTax - redTax;
+  } else if (taxable > TAX.basicLimit) {
+    relief = empContrib * TAX.higher;
+  } else {
+    relief = empContrib * TAX.basic;
+  }
+
+  const saRelief = taxable > TAX.basicLimit ? empContrib * (TAX.higher - TAX.basic) : 0;
+  const is60 = taxable > 100000 && taxable < 125140;
+
+  return {
+    takeHome: Math.round(takeHome),
+    takeHomeMonthly: Math.round(takeHome / 12),
+    itax: Math.round(nonSavingsItax), ni: Math.round(ni), dt: Math.round(dt), st: Math.round(st),
+    totalTax: Math.round(totalTax),
+    totalPension: Math.round(empContrib + salary * (employerPct||0) / 100),
+    employerAmt: Math.round(salary * (employerPct||0) / 100),
+    relief: Math.round(relief),
+    saRelief: Math.round(saRelief),
+    pa: Math.round(pa),
+    effectiveRate: Math.round((totalTax / Math.max(1, gross)) * 100),
+    is60, gross: Math.round(gross),
+  };
+}
+
+function projectPot({ salary, empContrib, employerPct, existing, years, growth = 0.05 }) {
+  const annual = empContrib + salary * (employerPct||0) / 100;
+  let pot = existing || 0;
+  for (let i = 0; i < years; i++) pot = (pot + annual) * (1 + growth);
+  return Math.round(pot);
+}
+
+// ═══════════════════════════════════════════
+// FORMAT
+// ═══════════════════════════════════════════
+function fmt(n) { return '£' + Math.abs(Math.round(n)).toLocaleString('en-GB'); }
+function fmtS(n) {
+  n = Math.round(n);
+  if (n >= 1000000) return '£' + (n/1000000).toFixed(1) + 'm';
+  if (n >= 1000) return '£' + Math.round(n/1000) + 'k';
+  return fmt(n);
+}
+
+// ═══════════════════════════════════════════
+// NUMBER ANIMATION
+// ═══════════════════════════════════════════
+const _animState = {};
+function animateVal(id, newVal, formatFn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (_animState[id]) cancelAnimationFrame(_animState[id].raf);
+  const startVal = _animState[id] ? _animState[id].current : newVal;
+  const startTime = performance.now();
+  const duration = 320;
+  function tick(now) {
+    const t = Math.min(1, (now - startTime) / duration);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(startVal + (newVal - startVal) * ease);
+    el.textContent = formatFn(val);
+    _animState[id] = { current: val, raf: t < 1 ? requestAnimationFrame(tick) : null };
+  }
+  _animState[id] = { current: startVal, raf: requestAnimationFrame(tick) };
+}
+
+// ═══════════════════════════════════════════
+// SLIDER FACTORY
+// ═══════════════════════════════════════════
+function makeSlider(containerId, { min, max, step = 1, value, format, onChange, label = '' }) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <div class="slider-wrap">
+      <div class="slider-bubble" id="${containerId}-bubble" style="z-index:10;position:absolute;top:0;transform:translateX(-50%);pointer-events:auto;display:flex;flex-direction:column;align-items:center;">
+        <span id="${containerId}-bubble-txt" style="display:inline-block;background:#1c1917;color:#fff;font-size:15px;font-weight:800;padding:6px 13px;border-radius:8px;white-space:nowrap;letter-spacing:-0.3px;cursor:pointer;user-select:none;"></span>
+        <div id="${containerId}-bubble-arrow" style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #1c1917;margin-top:0;"></div>
+      </div>
+      <div class="slider-track" style="position:relative;">
+        <div class="slider-fill" id="${containerId}-fill"></div>
+        <div class="slider-thumb" id="${containerId}-thumb"></div>
+        <input type="range" class="hidden-range" id="${containerId}-input"
+          min="${min}" max="${max}" step="${step}" value="${value}" style="z-index:5;"
+          aria-label="${label || containerId}">
+      </div>
+      <div class="slider-labels">
+        <span>${format(min)}</span>
+        <span>${format(max)}</span>
+      </div>
+    </div>`;
+
+  const rangeInput = document.getElementById(`${containerId}-input`);
+  const bubbleTxt = document.getElementById(`${containerId}-bubble-txt`);
+  let editing = false;
+
+  function snapToStep(v) {
+    const snapped = Math.round((Math.min(max, Math.max(min, v)) - min) / step) * step + min;
+    return Math.round(snapped * 1000) / 1000;
+  }
+
+  function update(v) {
+    const pct = (v - min) / (max - min);
+    const thumb = document.getElementById(`${containerId}-thumb`);
+    const bubble = document.getElementById(`${containerId}-bubble`);
+    if (thumb) thumb.style.left = (pct * 100) + '%';
+    if (!editing && bubbleTxt) bubbleTxt.textContent = format(v);
+    if (bubble) bubble.style.left = `clamp(20px, calc(${pct * 100}%), calc(100% - 20px))`;
+  }
+
+  function enterEditMode(e) {
+    e.stopPropagation();
+    editing = true;
+    const currentVal = +rangeInput.value;
+    const bubble = document.getElementById(containerId + '-bubble');
+    bubble.innerHTML = `
+      <div style="display:flex;align-items:center;gap:0;background:#1c1917;border-radius:8px;overflow:hidden;">
+        <button id="${containerId}-minus" style="background:#1c1917;color:#fff;border:none;font-size:18px;font-weight:700;padding:6px 12px;cursor:pointer;font-family:inherit;line-height:1;" aria-label="Decrease">−</button>
+        <input id="${containerId}-bubble-input" type="number" inputmode="numeric"
+          style="background:#1c1917;color:#fff;border:none;outline:none;font-size:15px;font-weight:800;padding:6px 4px;width:90px;text-align:center;font-family:inherit;letter-spacing:-0.3px;-moz-appearance:textfield;"
+          min="${min}" max="${max}" step="${step}" value="${currentVal}">
+        <button id="${containerId}-plus" style="background:#1c1917;color:#fff;border:none;font-size:18px;font-weight:700;padding:6px 12px;cursor:pointer;font-family:inherit;line-height:1;" aria-label="Increase">+</button>
+      </div>
+      <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #1c1917;"></div>`;
+
+    const inp = document.getElementById(containerId + '-bubble-input');
+    const minusBtn = document.getElementById(containerId + '-minus');
+    const plusBtn = document.getElementById(containerId + '-plus');
+
+    function stepBy(delta) {
+      const v = snapToStep((+inp.value || +rangeInput.value) + delta);
+      inp.value = v;
+      rangeInput.value = v;
+      const pct2 = (v - min) / (max - min);
+      const thumb = document.getElementById(containerId + '-thumb');
+      const bubbleEl = document.getElementById(containerId + '-bubble');
+      if (thumb) thumb.style.left = (pct2 * 100) + '%';
+      if (bubbleEl) bubbleEl.style.left = `clamp(20px, calc(${pct2 * 100}%), calc(100% - 20px))`;
+      onChange(v);
+    }
+
+    minusBtn.addEventListener('mousedown', e => { e.preventDefault(); stepBy(-step); });
+    plusBtn.addEventListener('mousedown', e => { e.preventDefault(); stepBy(step); });
+    minusBtn.addEventListener('touchend', e => { e.preventDefault(); stepBy(-step); });
+    plusBtn.addEventListener('touchend', e => { e.preventDefault(); stepBy(step); });
+    inp.addEventListener('blur', commitEditMode);
+    inp.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); }
+      if (ev.key === 'Escape') { cancelEditMode(); }
+    });
+    setTimeout(() => { inp.focus(); inp.select(); }, 10);
+  }
+
+  function commitEditMode() {
+    if (!editing) return;
+    editing = false;
+    const inp2 = document.getElementById(containerId + '-bubble-input');
+    const raw = inp2 ? parseFloat(inp2.value) : NaN;
+    const bubble = document.getElementById(containerId + '-bubble');
+    if (bubble) {
+      bubble.innerHTML = `<span id="${containerId}-bubble-txt" style="display:inline-block;background:#1c1917;color:#fff;font-size:15px;font-weight:800;padding:6px 13px;border-radius:8px;white-space:nowrap;letter-spacing:-0.3px;cursor:pointer;user-select:none;"></span><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #1c1917;margin-top:0;"></div>`;
+      const newTxt = document.getElementById(containerId + '-bubble-txt');
+      if (newTxt) {
+        newTxt.addEventListener('click', enterEditMode);
+        newTxt.addEventListener('touchend', enterEditMode, { passive: false });
+      }
+    }
+    if (!isNaN(raw)) {
+      const snapped = snapToStep(raw);
+      rangeInput.value = snapped;
+      update(snapped);
+      onChange(snapped);
+    } else {
+      update(+rangeInput.value);
+    }
+  }
+
+  function cancelEditMode() {
+    editing = false;
+    commitEditMode();
+  }
+
+  const newBubbleTxt = document.getElementById(`${containerId}-bubble-txt`);
+  if (newBubbleTxt) {
+    newBubbleTxt.addEventListener('click', enterEditMode);
+    newBubbleTxt.addEventListener('touchend', enterEditMode, { passive: false });
+  }
+
+  update(value);
+  rangeInput.addEventListener('input', function() {
+    if (editing) return;
+    update(+this.value);
+    onChange(+this.value);
+  });
+}
+
+// ═══════════════════════════════════════════
+// STEP MANAGEMENT
+// ═══════════════════════════════════════════
+function initSteps() {
+  // Animate in step 1 immediately
+  setTimeout(() => {
+    document.getElementById('step1').classList.add('entered', 'active');
+    // Show steps 2-5 with delay
+    [2,3,4,5].forEach((n, i) => {
+      setTimeout(() => {
+        const el = document.getElementById('step' + n);
+        if (el) el.classList.add('entered');
+      }, 80 * (i + 1));
+    });
+  }, 100);
+  document.getElementById('progress-wrap').style.display = 'block';
+  document.getElementById('hero-section').style.display = 'none';
+  updateProgress(1);
+}
+
+function setActiveStep(n) {
+  activeStep = n;
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('step' + i);
+    if (!el) continue;
+    el.classList.remove('active', 'completed');
+    if (i === n) el.classList.add('active');
+    else if (i < n) el.classList.add('completed');
+  }
+  updateProgress(n);
+}
+
+function updateProgress(n) {
+  const pct = Math.round(((n - 1) / 4) * 100);
+  const fill = document.getElementById('progress-fill');
+  if (fill) fill.style.width = pct + '%';
+  ['income','other','pension','results'].forEach((id, i) => {
+    const el = document.getElementById('pl-' + id);
+    if (el) el.classList.toggle('active', i + 1 === n || (n > 4 && i === 3));
+  });
+}
+
+function completeStep(n) {
+  // Validate current step
+  if (n === 2) {
+    const sal = getGrossSalary();
+    if (!sal || sal < 1000) { alert('Please enter your income to continue.'); return; }
+    const label = S.earningType === 'paye' ? fmt(S.salary)
+      : S.earningType === 'self' ? fmt(S.selfIncome)
+      : fmt(S.bothSalary) + ' + ' + fmt(S.bothSelf);
+    document.getElementById('step2-answer').textContent = label;
+    document.getElementById('step2-answer-row').style.display = 'flex';
+    document.getElementById('step2-continue').style.display = 'none';
+  }
+  if (n === 3) {
+    const extras = [S.dividends, S.savings, S.rental].filter(v => v > 0);
+    document.getElementById('step3-answer').textContent = extras.length ? 'Other income included' : 'No other income';
+    document.getElementById('step3-answer-row').style.display = 'flex';
+    document.getElementById('step3-continue').style.display = 'none';
+  }
+  if (n === 4) {
+    const contrib = getCurrentContrib();
+    document.getElementById('step4-answer').textContent = S.contribMode === 'pct'
+      ? S.contribPct + '% of salary (' + fmt(contrib) + '/yr)'
+      : fmt(contrib) + ' per year';
+    document.getElementById('step4-answer-row').style.display = 'flex';
+    document.getElementById('step4-continue').style.display = 'none';
+  }
+  setActiveStep(n + 1);
+  setTimeout(() => {
+    const next = document.getElementById('step' + (n + 1));
+    if (next) next.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function editStep(n) {
+  setActiveStep(n);
+  if (n === 2) {
+    document.getElementById('step2-answer-row').style.display = 'none';
+    document.getElementById('step2-continue').style.display = 'flex';
+  }
+  if (n === 3) {
+    document.getElementById('step3-answer-row').style.display = 'none';
+    document.getElementById('step3-continue').style.display = 'flex';
+  }
+  if (n === 4) {
+    document.getElementById('step4-answer-row').style.display = 'none';
+    document.getElementById('step4-continue').style.display = 'flex';
+  }
+  setTimeout(() => {
+    const el = document.getElementById('step' + n);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus({ preventScroll: true }); }
+  }, 100);
+}
+
+// ═══════════════════════════════════════════
+// EARNING TYPE
+// ═══════════════════════════════════════════
+function setEarningType(type) {
+  S.earningType = type;
+  ['paye','self','both'].forEach(t => {
+    const btn = document.getElementById('earn-' + t);
+    btn.classList.toggle('active', t === type);
+    btn.setAttribute('aria-pressed', t === type ? 'true' : 'false');
+  });
+  document.getElementById('paye-fields').style.display = type === 'paye' ? '' : 'none';
+  document.getElementById('self-fields').style.display = type === 'self' ? '' : 'none';
+  document.getElementById('both-fields').style.display = type === 'both' ? '' : 'none';
+  document.getElementById('employer-field').style.display = type === 'self' ? 'none' : 'block';
+
+  const labels = { paye: 'Employed', self: 'Self-employed', both: 'Both' };
+  document.getElementById('step1-answer').textContent = labels[type];
+
+  // First selection — show answer row and advance to step 2
+  const answerRow = document.getElementById('step1-answer-row');
+  if (!answerRow.dataset.shown) {
+    answerRow.dataset.shown = '1';
+    answerRow.style.display = 'flex';
+    setActiveStep(2);
+    setTimeout(() => {
+      document.getElementById('step2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  }
+}
+
+// ═══════════════════════════════════════════
+// INCOME INPUTS
+// ═══════════════════════════════════════════
+function checkTrap(income, warnId) {
+  const inTrap = income >= 100000 && income <= 125140;
+  const el = document.getElementById(warnId);
+  if (el) el.style.display = inTrap ? 'block' : 'none';
+}
+
+function onSalaryChange() {
+  S.salary = parseFloat(document.getElementById('salary-input').value) || 0;
+  checkTrap(S.salary, 'trap-warn');
+  document.getElementById('step2-continue').style.display = S.salary > 0 ? 'flex' : 'none';
+  updateContribEquiv();
+}
+
+function onSelfIncomeChange() {
+  S.selfIncome = parseFloat(document.getElementById('self-income').value) || 0;
+  checkTrap(S.selfIncome, 'trap-warn-self');
+  document.getElementById('step2-continue').style.display = S.selfIncome > 0 ? 'flex' : 'none';
+}
+
+function onBothChange() {
+  S.bothSalary = parseFloat(document.getElementById('both-salary').value) || 0;
+  S.bothSelf = parseFloat(document.getElementById('both-self').value) || 0;
+  checkTrap(S.bothSalary + S.bothSelf, 'trap-warn-both');
+  document.getElementById('step2-continue').style.display = (S.bothSalary + S.bothSelf) > 0 ? 'flex' : 'none';
+}
+
+function adjustSalary(delta) {
+  const inp = document.getElementById('salary-input');
+  const val = Math.min(500000, Math.max(0, (S.salary || 0) + delta));
+  S.salary = val;
+  inp.value = val;
+  checkTrap(val, 'trap-warn');
+  document.getElementById('step2-continue').style.display = val > 0 ? 'flex' : 'none';
+  updateContribEquiv();
+}
+
+// ═══════════════════════════════════════════
+// OTHER INCOME TOGGLE
+// ═══════════════════════════════════════════
+function toggleOtherIncome() {
+  const fields = document.getElementById('other-income-fields');
+  const arrow = document.getElementById('other-income-arrow');
+  const visible = fields.classList.toggle('visible');
+  arrow.textContent = visible ? '↑' : '↓';
+  arrow.classList.toggle('open', visible);
+}
+
+// ═══════════════════════════════════════════
+// PENSION CONTRIBUTIONS
+// ═══════════════════════════════════════════
+function setContribMode(mode) {
+  S.contribMode = mode;
+  document.getElementById('mode-pct').style.background = mode === 'pct' ? 'var(--stone-900)' : 'var(--white)';
+  document.getElementById('mode-pct').style.color = mode === 'pct' ? '#fff' : 'var(--stone-500)';
+  document.getElementById('mode-gbp').style.background = mode === 'gbp' ? 'var(--stone-900)' : 'var(--white)';
+  document.getElementById('mode-gbp').style.color = mode === 'gbp' ? '#fff' : 'var(--stone-500)';
+  document.getElementById('contrib-pct-field').style.display = mode === 'pct' ? 'block' : 'none';
+  document.getElementById('contrib-gbp-field').style.display = mode === 'gbp' ? 'block' : 'none';
+}
+
+function getCurrentContrib() {
+  const salary = getGrossSalary();
+  if (S.contribMode === 'pct') return Math.round(salary * S.contribPct / 100);
+  return S.contribGbp;
+}
+
+function updateContribEquiv() {
+  const salary = getGrossSalary();
+  const equiv = document.getElementById('contrib-equiv');
+  if (equiv && S.contribPct > 0 && salary > 0) {
+    equiv.textContent = '= ' + fmt(salary * S.contribPct / 100) + ' / year';
+  }
+}
+
+function onContribChange() {
+  S.contribPct = parseFloat(document.getElementById('contrib-pct').value) || 0;
+  updateContribEquiv();
+}
+
+function onContribGbpChange() {
+  S.contribGbp = parseFloat(document.getElementById('contrib-gbp').value) || 0;
+}
+
+// ═══════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════
+function showResults() {
+  const salary = getGrossSalary();
+  if (!salary) { alert('Please enter your income.'); return; }
+
+  const currentContrib = getCurrentContrib();
+  const grossIncome = salary + S.dividends + S.savings + S.rental;
+  const escapeContrib = Math.max(0, grossIncome - 100000);
+
+  S.sliderContrib = escapeContrib > 0 ? escapeContrib : currentContrib;
+
+  document.getElementById('results').classList.add('show');
+  setActiveStep(5);
+
+  const sliderMax = Math.ceil((Math.max(escapeContrib, currentContrib, salary * 0.3) * 1.3) / 1000) * 1000 || 50000;
+
+  makeSlider('results-slider-wrap', {
+    min: 0, max: sliderMax, step: 500,
+    value: S.sliderContrib,
+    label: 'Annual pension contribution in pounds',
+    format: v => '£' + v.toLocaleString('en-GB'),
+    onChange: v => { S.sliderContrib = v; renderResults(); }
+  });
+
+  renderResults();
+  updateProgress(5);
+
+  setTimeout(() => {
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function renderResults() {
+  const salary = getGrossSalary();
+  const divs = S.dividends || 0;
+  const sav = S.savings || 0;
+  const rent = S.rental || 0;
+  const grossIncome = salary + divs + sav + rent;
+  const escapeContrib = Math.max(0, grossIncome - 100000);
+  const sliderAmt = S.sliderContrib;
+  const currentContrib = getCurrentContrib();
+  const escaped = sliderAmt >= escapeContrib && escapeContrib > 0;
+
+  // Engine runs
+  const escapeEngine = escapeContrib > 0
+    ? runEngine({ salary, empContrib: escapeContrib, employerPct: S.employerContrib, dividends: divs, savings: sav, rental: rent })
+    : null;
+  const modelled = runEngine({ salary, empContrib: sliderAmt, employerPct: S.employerContrib, dividends: divs, savings: sav, rental: rent });
+  const modelledPot = projectPot({ salary, empContrib: sliderAmt, employerPct: S.employerContrib, existing: S.existingPot, years: S.years });
+
+  // ── Opportunity card ──
+  if (escapeContrib > 0 && escapeEngine) {
+    const escapeRelief   = escapeEngine.relief;
+    const escapeRealCost = Math.max(0, escapeContrib - escapeRelief);
+    document.getElementById('r-headline').innerHTML =
+      `You could reclaim <strong>${fmt(escapeRelief)}</strong> in tax relief by contributing <strong>${fmt(escapeContrib)}</strong>. The real cost to you is <strong>${fmt(escapeRealCost)}</strong>.`;
+    const partialOrFull = grossIncome > 125140
+      ? 'HMRC has quietly removed your tax-free personal allowance entirely, creating an effective 60% tax rate on that slice.'
+      : 'HMRC has quietly removed part of your tax-free personal allowance, creating an effective 60% tax rate on that slice.';
+    document.getElementById('r-explain-1').textContent = `Your income is above £100,000, so ${partialOrFull}`;
+  } else {
+    document.getElementById('r-headline').innerHTML = `You're getting <strong>${fmt(modelled.relief)}</strong> in tax relief on your current contribution.`;
+    document.getElementById('r-explain-1').textContent = grossIncome <= 100000
+      ? 'Your income is below the 60% trap threshold, so you\'re getting standard higher-rate relief on your pension contributions.'
+      : 'Your income is above £125,140, so your personal allowance has been fully removed. You\'re paying the additional 45% rate.';
+  }
+
+  // ── Notches ──
+  const notch = document.getElementById('r-escape-notch');
+  const currentNotch = document.getElementById('r-current-notch');
+  if (escapeContrib > 0) {
+    const sliderMax = Math.ceil((Math.max(escapeContrib, currentContrib, salary * 0.3) * 1.3) / 1000) * 1000 || 50000;
+    const escapePct = Math.min(98, Math.max(2, (escapeContrib / sliderMax) * 100));
+    if (notch) { notch.style.display = 'flex'; notch.style.left = escapePct + '%'; }
+    const escLabel = document.getElementById('r-escape-notch-label');
+    if (escLabel) escLabel.textContent = 'Escape';
+    if (currentNotch && Math.abs(currentContrib - escapeContrib) > 500) {
+      const curPct = Math.min(96, Math.max(2, (currentContrib / sliderMax) * 100));
+      currentNotch.style.display = 'flex';
+      currentNotch.style.left = curPct + '%';
+      const curLabel = document.getElementById('r-current-notch-label');
+      if (curLabel) curLabel.textContent = 'Current';
+    } else if (currentNotch) {
+      currentNotch.style.display = 'none';
+    }
+  } else {
+    if (notch) notch.style.display = 'none';
+    if (currentNotch) currentNotch.style.display = 'none';
+  }
+
+  // ── Stat cards ──
+  animateVal('rc-val-1', modelled.takeHomeMonthly, v => '£' + Math.abs(v).toLocaleString('en-GB'));
+  document.getElementById('rc-sub-1').textContent = 'per month';
+
+  animateVal('rc-val-2', modelled.pa, v => '£' + Math.abs(v).toLocaleString('en-GB'));
+  document.getElementById('rc-sub-2').textContent = modelled.pa >= 12570 ? 'fully restored ✓' : modelled.pa > 0 ? 'partially restored' : 'fully removed';
+
+  if (S.employerContrib > 0) {
+    document.getElementById('rc-label-3').textContent = 'Employer contribution';
+    const empAnnual = Math.round(salary * S.employerContrib / 100);
+    animateVal('rc-val-3', empAnnual, v => '£' + Math.abs(v).toLocaleString('en-GB'));
+    document.getElementById('rc-sub-3').textContent = 'per year';
+  } else {
+    document.getElementById('rc-label-3').textContent = 'Tax saving';
+    animateVal('rc-val-3', modelled.relief, v => '£' + Math.abs(v).toLocaleString('en-GB'));
+    document.getElementById('rc-sub-3').textContent = 'this year';
+  }
+
+  animateVal('rc-val-4', modelledPot, v => {
+    if (v >= 1000000) return '£' + (v/1000000).toFixed(1) + 'm';
+    if (v >= 1000) return '£' + Math.round(v/1000) + 'k';
+    return '£' + Math.abs(v).toLocaleString('en-GB');
+  });
+  document.getElementById('rc-sub-4').textContent = 'at retirement';
+
+  // ── Insight cards ──
+  const infoIcon = `<svg class="knowing-icon" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M11 10v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="7.5" r="0.8" fill="currentColor"/></svg>`;
+  const knowing = [];
+  if (modelled.saRelief > 0) {
+    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically — you need to claim it via a self-assessment return. Register at gov.uk/self-assessment.` });
+  }
+  if (escapeContrib > 0 && modelled.pa < 12570 && modelled.pa > 0) {
+    knowing.push({ title: 'Your allowance is still reduced', body: `At this contribution level you've reclaimed ${fmt(modelled.pa)} of your personal allowance — not the full £12,570. Contribute ${fmt(escapeContrib - sliderAmt)} more to escape completely.` });
+  }
+  if (divs > 0) {
+    knowing.push({ title: divs <= 500 ? 'Your dividends are tax-free' : 'Part of your dividends are taxable', body: divs <= 500 ? `Your ${fmt(divs)} in dividends falls within the £500 annual allowance.` : `The first £500 of your dividends is tax-free. The rest is taxed at dividend rates.` });
+  }
+  knowing.push({ title: 'You can\'t access this until 57', body: 'Pension money is locked until age 57 (rising to 58 by 2028). Make sure you have accessible savings for anything you might need before then.' });
+  document.getElementById('r-knowing').innerHTML = knowing.map(k => `
+    <div class="knowing-item">${infoIcon}<div><div class="knowing-title">${k.title}</div><div class="knowing-body">${k.body}</div></div></div>`).join('');
+
+  // ── Breakdown bar ──
+  const barSegs = [
+    { label: 'Take-home', val: Math.max(0, modelled.takeHome), color: '#c4bfb9' },
+    { label: 'Income tax', val: modelled.itax, color: '#c4714a' },
+    { label: 'NI', val: modelled.ni, color: '#d4a088' },
+    { label: 'Pension', val: modelled.totalPension, color: '#7a9e8a' },
+  ];
+  const total = barSegs.reduce((s, b) => s + b.val, 0) || 1;
+  document.getElementById('r-income-bar-wrap').innerHTML = `
+    <div class="income-bar" style="margin-bottom:4px;">
+      ${barSegs.map(s => `<div class="income-bar-seg" style="width:${(s.val/total*100).toFixed(1)}%;background:${s.color}"></div>`).join('')}
+    </div>`;
+
+  const rows = [
+    { label: 'Take-home', val: fmt(modelled.takeHome), sub: fmt(modelled.takeHomeMonthly) + '/mo', color: '#c4bfb9' },
+    { label: 'Income tax', val: fmt(modelled.itax), sub: modelled.effectiveRate + '% effective', color: '#c4714a' },
+    { label: 'Nat. Insurance', val: fmt(modelled.ni), color: '#d4a088' },
+    { label: 'Total pension', val: fmt(modelled.totalPension), sub: S.employerContrib > 0 ? 'Incl. ' + fmt(modelled.employerAmt) + ' employer' : null, color: '#7a9e8a' },
+  ];
+  if (modelled.dt > 0) rows.push({ label: 'Dividend tax', val: fmt(modelled.dt) });
+  if (modelled.st > 0) rows.push({ label: 'Savings tax', val: fmt(modelled.st) });
+  rows.push({ label: 'Personal allowance', val: fmt(modelled.pa), sub: modelled.is60 ? 'Tapered ⚡' : 'Full' });
+  rows.push({ label: 'Tax relief', val: fmt(modelled.relief) });
+
+  document.getElementById('r-breakdown-grid').innerHTML =
+    rows.map(r => `<div class="stat-card${r.color ? ' bar-match' : ''}" ${r.color ? `style="border-left-color:${r.color};"` : ''}>
+      <div class="stat-label">${r.label}</div>
+      <div class="stat-val">${r.val}</div>
+      ${r.sub ? `<div class="stat-sub">${r.sub}</div>` : ''}
+    </div>`).join('')
+    + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">Self-assessment required</div><div class="sa-warn-body">${fmt(modelled.saRelief)} must be claimed via self-assessment. Register at <strong>gov.uk/self-assessment</strong>.</div></div>` : '')
+    + `<div class="disclaimer">Based on 2026/27 HMRC rates for England &amp; Wales. Illustrative only — not financial advice.</div>`;
+
+  // ── CTA copy ──
+  let ctaCopy = '';
+  if (escapeContrib > 0) {
+    if (escaped) {
+      ctaCopy = "You've found how to escape the 60% tax trap. If you think you can afford to, increase your contributions or make a one-off payment.";
+    } else {
+      ctaCopy = `You're leaving money with HMRC that you don't have to. If you think you can afford to, increasing your contributions to ${fmt(escapeContrib)} gets it back.`;
+    }
+  } else if (grossIncome > 100000) {
+    ctaCopy = "Your personal allowance has been fully removed. A pension contribution reduces your taxable income and builds your retirement pot simultaneously. If you think you can afford to, it's worth doing.";
+  } else {
+    ctaCopy = "Even a small increase to your contributions adds up significantly over time. If you think you can afford to, it's worth doing.";
+  }
+  document.getElementById('r-cta-text').textContent = ctaCopy;
+
+  // ── Feedback hidden fields ──
+  const sf = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  sf('fb-salary', salary); sf('fb-escape', escapeContrib); sf('fb-relief', modelled.relief);
+
+  // aria-live
+  const liveEl = document.getElementById('r-live');
+  if (liveEl) liveEl.textContent = `Tax relief: ${fmt(modelled.relief)}. Take-home: ${fmt(modelled.takeHomeMonthly)} per month.`;
+}
+
+// ═══════════════════════════════════════════
+// TOGGLES
+// ═══════════════════════════════════════════
+function toggleBreakdown() {
+  breakdownOpen = !breakdownOpen;
+  document.getElementById('r-breakdown-body').classList.toggle('open', breakdownOpen);
+  document.getElementById('r-breakdown-arrow').textContent = breakdownOpen ? '↑ Hide' : '↓ Show detail';
+}
+
+function toggleKnowing() {
+  knowingOpen = !knowingOpen;
+  document.getElementById('r-knowing-body').classList.toggle('open', knowingOpen);
+  document.getElementById('r-knowing-arrow').textContent = knowingOpen ? '↑ Hide' : '↓ Show';
+}
+
+// ═══════════════════════════════════════════
+// FEEDBACK
+// ═══════════════════════════════════════════
+function submitFeedback(answer) {
+  const btns = document.querySelectorAll('.feedback-btn');
+  btns.forEach(b => b.disabled = true);
+  document.querySelector('.feedback-btn.' + answer).classList.add('selected');
+
+  const data = new FormData();
+  data.append('answer', answer);
+  data.append('salary', document.getElementById('fb-salary').value);
+  data.append('escape_contrib', document.getElementById('fb-escape').value);
+  data.append('tax_relief', document.getElementById('fb-relief').value);
+
+  fetch('https://formspree.io/f/meedzezl', {
+    method: 'POST', body: data, headers: { Accept: 'application/json' }
+  }).catch(() => {}); // silent fail — feedback is best-effort
+
+  document.getElementById('feedback-thanks').classList.add('visible');
+}
+
+// ═══════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════
+function resetForm() {
+  window.scrollTo(0, 0);
+  document.getElementById('hero-section').style.display = 'block';
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('results').classList.remove('show');
+  // Reset step states
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('step' + i);
+    if (el) el.classList.remove('active', 'completed', 'entered');
+  }
+  // Hide answer rows and clear data attributes
+  [1,2,3,4].forEach(n => {
+    const row = document.getElementById('step' + n + '-answer-row');
+    if (row) { row.style.display = 'none'; delete row.dataset.shown; }
+  });
+  document.getElementById('step2-continue').style.display = 'none';
+  document.getElementById('step3-continue').style.display = 'flex';
+  document.getElementById('step4-continue').style.display = 'flex';
+  activeStep = 1;
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // On load: show hero only. Steps stay hidden until user clicks Get Started.
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('hero-section').style.display = 'block';
+  document.getElementById('step2-continue').style.display = 'none';
+});
+
+function startTool() {
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('main-form').style.display = 'block';
+  initSteps();
+  setTimeout(() => {
+    document.getElementById('form-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+</script>
+</body>
+</html>
