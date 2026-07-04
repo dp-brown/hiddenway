@@ -1496,6 +1496,7 @@ function submitFeedback(answer) {
   document.querySelector('.feedback-btn.' + answer).classList.add('selected');
 
   const data = new FormData();
+  data.append('_gotcha', ''); // honeypot: real users leave this empty; bots fill it and Formspree discards
   data.append('answer', answer);
   data.append('salary', document.getElementById('fb-salary').value);
   data.append('escape_contrib', document.getElementById('fb-escape').value);
