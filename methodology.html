@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — HiddenWay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf8f5;
+  --white: #ffffff;
+  --stone-900: #1c1917;
+  --stone-600: #57534e;
+  --stone-500: #78716c;
+  --stone-400: #757069;
+  --stone-200: #e7e5e4;
+  --terra: #c4714a;
+  --terra-text: #9d5230;
+  --sans: 'DM Sans', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1714;
+    --white: #201d1a;
+    --stone-900: #f0ebe3;
+    --stone-600: #b0a89e;
+    --stone-500: #9e9590;
+    --stone-400: #969290;
+    --stone-200: #2c2824;
+    --terra-text: #d08258;
+  }
+}
+body { font-family: var(--sans); background: var(--bg); color: var(--stone-900); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+nav { display: flex; align-items: center; padding: 16px 32px; border-bottom: 1px solid var(--stone-200); background: var(--bg); }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.nav-dot { width: 32px; height: 32px; border-radius: 50%; background: var(--terra); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-name { font-weight: 900; font-size: 17px; letter-spacing: -0.5px; }
+main { max-width: 640px; margin: 0 auto; padding: 48px 24px 100px; }
+h1 { font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.4rem); letter-spacing: -1px; margin-bottom: 8px; }
+.updated { font-size: 13px; color: var(--stone-400); margin-bottom: 40px; }
+h2 { font-weight: 900; font-size: 1.15rem; letter-spacing: -0.3px; margin: 36px 0 10px; }
+p, li { font-size: 15px; color: var(--stone-600); line-height: 1.7; margin-bottom: 12px; }
+ul { padding-left: 22px; margin-bottom: 12px; }
+a { color: var(--terra-text); }
+.back { display: inline-block; margin-top: 40px; font-size: 14px; font-weight: 700; color: var(--terra-text); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-dot">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+        <path d="M8 3 L8 8 L11 10" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <span class="nav-name">HiddenWay</span>
+  </a>
+</nav>
+
+<main>
+  <h1>Methodology</h1>
+
+  <h2>The trap</h2>
+  <p>Once your income passes £100,000, HMRC removes £1 of your tax-free personal allowance for every £2 you earn. By £125,140 the whole allowance is gone. Across that band, part of your income is taxed at roughly 60% — far more than the headline higher rate. This tool calculates how a pension contribution restores the allowance and lowers that rate.</p>
+
+  <h2>What we calculate</h2>
+  <p>From your income, we work out how much of it falls in the trap, the contribution needed to bring your adjusted net income back to £100,000, the tax relief that contribution earns, its real cost after relief, and the effect on your take-home pay and projected pot.</p>
+
+  <h2>The figures we use</h2>
+  <ul>
+    <li>Personal allowance: £12,570, tapered between £100,000 and £125,140.</li>
+    <li>Basic-rate band: £37,700.</li>
+    <li>Higher-rate threshold: £50,270. Additional rate: above £125,140.</li>
+    <li>Pension annual allowance: £60,000, which caps the contribution the tool models.</li>
+  </ul>
+  <p>These are 2026/27 rates for England and Wales. Thresholds are frozen until at least April 2028.</p>
+
+  <h2>What we assume</h2>
+  <p>We assume your income is employment salary or self-employment profit, both of which count as relevant UK earnings for pension tax relief. We round income to the nearest £1,000. Projections of your pot are illustrative and assume no investment growth beyond what you enter.</p>
+
+  <h2>What we don't cover yet</h2>
+  <p>We don't yet model company directors who take income as dividends from a company they own. The rules for that are different: personal pension relief is capped at your salary, not your total income, and the escape usually has to come from a company contribution. We screen those cases out rather than show a figure we can't stand behind. Scottish income tax bands are not covered.</p>
+
+  <h2>This isn't financial advice</h2>
+  <p>HiddenWay is an information tool, not a financial adviser. The figures are estimates to help you understand your position, not a recommendation to act. Pension and tax decisions depend on your full circumstances. Speak to a qualified adviser or accountant before making a contribution.</p>
+
+  <h2>Questions</h2>
+  <p>If something here looks wrong, tell us: <a href="mailto:hiddenwayapp@gmail.com">hiddenwayapp@gmail.com</a>. Getting the numbers right is the point.</p>
+
+  <a href="index.html" class="back">← Back to HiddenWay</a>
+</main>
+
+</body>
+</html>
