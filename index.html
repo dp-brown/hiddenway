@@ -201,6 +201,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
 
 /* Stat cards */
 .results-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+.results-assumptions { font-size: 12px; color: var(--stone-500); line-height: 1.5; margin-bottom: 20px; }
 .r-card { background: var(--white); border-radius: 18px; padding: 20px; border: 1px solid var(--stone-200); box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
 .r-card-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone-400); margin-bottom: 8px; }
 .r-card-val { font-weight: 900; font-size: clamp(1.4rem, 5vw, 1.9rem); letter-spacing: -1px; color: var(--stone-900); line-height: 1; }
@@ -390,7 +391,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <div id="step2-body">
     <div class="step-num">Step 2 of 5</div>
     <div class="step-q" id="step2-q">What's your annual income?</div>
-    <div class="step-hint" id="step2-hint">A ballpark is fine — we round to the nearest £1,000.</div>
+    <div class="step-hint" id="step2-hint">A ballpark is fine — use the arrows to nudge in £1,000 steps.</div>
     <div class="step-error" id="step2-error" style="display:none">Enter your income to continue.</div>
     <div class="step-prompt" id="step2-prompt">Choose how you earn above to see this.</div>
 
@@ -440,7 +441,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
   <div class="step-card" id="step3" tabindex="-1">
     <div class="step-num">Step 3 of 5</div>
     <div class="step-q">Any other income?</div>
-    <div class="step-hint">Dividends, savings interest, rental income. Skip if it's just your salary — you can always come back.</div>
+    <div class="step-hint">Dividends, savings interest, rental profit. Skip if it's just your salary — you can always come back.</div>
 
     <div class="optional-toggle" id="other-income-toggle" onclick="toggleOtherIncome()">
       <span class="optional-toggle-label">Add other income</span>
@@ -465,12 +466,12 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
           <div class="input-hint">Personal Savings Allowance applied automatically</div>
         </div>
         <div class="input-field">
-          <div class="input-label">Rental income</div>
+          <div class="input-label">Rental profit</div>
           <div class="input-inner">
             <span class="input-pre">£</span>
-            <input type="number" class="big-input" id="rental-input" inputmode="numeric" placeholder="0" aria-label="Annual rental income before expenses in pounds" oninput="S.rental = parseFloat(this.value)||0; updateAnswerRows()">
+            <input type="number" class="big-input" id="rental-input" inputmode="numeric" placeholder="0" aria-label="Annual rental profit after expenses in pounds" oninput="S.rental = parseFloat(this.value)||0; updateAnswerRows()">
           </div>
-          <div class="input-hint">Before expenses</div>
+          <div class="input-hint">After expenses</div>
         </div>
       </div>
     </div>
@@ -507,6 +508,11 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
         <input type="number" class="big-input" id="contrib-gbp" inputmode="numeric" placeholder="0" aria-label="Your annual pension contribution in pounds" oninput="onContribGbpChange()">
       </div>
       <div class="input-equiv" id="contrib-gbp-equiv"></div>
+    </div>
+
+    <div class="step-tip" id="contrib-method-note">
+      <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
+      <span>These figures assume relief at source or net pay. If you pay by salary sacrifice, your contribution already comes out of your pay before tax — enter your salary as shown and leave this at zero, so it isn't counted twice. Salary sacrifice also saves National Insurance, which this tool doesn't yet model.</span>
     </div>
 
     <!-- Employer contribution — shown for employed only -->
@@ -558,7 +564,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     </div>
     <div class="step-tip">
       <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
-      <span>You can access your pension from age 57 (rising to 58 by 2028).</span>
+      <span>Most pensions let you take money from 55 today, rising to 57 from April 2028. Your scheme's rules may differ.</span>
     </div>
   </div>
 
@@ -612,6 +618,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
       <div class="r-card"><div class="r-card-label" id="rc-label-3">Tax relief</div><div class="r-card-val" id="rc-val-3">—</div><div class="r-card-sub" id="rc-sub-3">this year</div></div>
       <div class="r-card"><div class="r-card-label" id="rc-label-4">Projected pot</div><div class="r-card-val" id="rc-val-4">—</div><div class="r-card-sub" id="rc-sub-4">at retirement</div></div>
     </div>
+    <p class="results-assumptions" id="r-assumptions">Projected pot assumes 5% growth a year. Take-home includes Income Tax and National Insurance.</p>
 
     <!-- Insight cards (collapsed) -->
     <div class="breakdown-wrap">
@@ -671,7 +678,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <a href="privacy.html" class="footer-link">Privacy</a>
     <a href="methodology.html" class="footer-link">Methodology</a>
   </div>
-  <p class="footer-copy">© 2026 HiddenWay. Based on 2026/27 HMRC rates for England &amp; Wales.</p>
+  <p class="footer-copy">© 2026 HiddenWay. Based on 2026/27 HMRC rates for England, Wales &amp; Northern Ireland.</p>
 </footer>
 
 <script>
@@ -702,14 +709,18 @@ let breakdownOpen = false;
 let knowingOpen = false;
 
 // ═══════════════════════════════════════════
-// TAX ENGINE (2026/27 E&W)
+// TAX ENGINE — 2026/27, England, Wales & Northern Ireland
+// All rates and thresholds live here. To update for a new tax year,
+// change the values below and the `updated` date; nothing else.
 // ═══════════════════════════════════════════
 const TAX = {
+  taxYear: '2026/27',
+  updated: 'Autumn Budget 2025 (26 November 2025)',
   pa: 12570, basicLimit: 50270, higherLimit: 125140,
   basic: 0.20, higher: 0.40, additional: 0.45,
   divAllowance: 500, divBasic: 0.1075, divHigher: 0.3575, divAdditional: 0.3935,
   psaHigher: 500, psaBasic: 1000,
-  niThresh: 12570, niUEL: 50270, ni1: 0.08, ni2: 0.02,
+  niThresh: 12570, niUEL: 50270, ni1: 0.08, ni2: 0.02, niSelf1: 0.06,
 };
 
 // Scotland rates — kept in code, not exposed in UI yet
@@ -745,6 +756,15 @@ function calcNI(salary) {
   if (salary <= TAX.niThresh) return 0;
   const b1 = Math.min(salary - TAX.niThresh, TAX.niUEL - TAX.niThresh) * TAX.ni1;
   const b2 = Math.max(0, salary - TAX.niUEL) * TAX.ni2;
+  return b1 + b2;
+}
+
+// Class 4 NI for the self-employed: 6% between the lower and upper profits limits, 2% above.
+// Pension contributions do not reduce Class 4, so this runs on full profit.
+function calcNI4(profit) {
+  if (profit <= TAX.niThresh) return 0;
+  const b1 = Math.min(profit - TAX.niThresh, TAX.niUEL - TAX.niThresh) * TAX.niSelf1;
+  const b2 = Math.max(0, profit - TAX.niUEL) * TAX.ni2;
   return b1 + b2;
 }
 
@@ -793,7 +813,7 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
       + Math.max(0, divTaxable - remBasicForDivs - remHigherForDivs) * TAX.divAdditional
     : 0;
 
-  const ni = calcNI(S.earningType === 'self' ? 0 : salary);
+  const ni = S.earningType === 'self' ? calcNI4(salary) : calcNI(salary);
   const totalTax = nonSavingsItax + st + dt + ni;
   const takeHome = gross - empContrib - totalTax;
 
@@ -1338,6 +1358,9 @@ function renderResults() {
   const modelled = runEngine({ salary, empContrib: sliderAmt, employerPct: S.employerContrib, dividends: divs, savings: sav, rental: rent });
   const modelledPot = projectPot({ salary, empContrib: sliderAmt, employerPct: S.employerContrib, existing: S.existingPot, years: S.years });
 
+  const assumptionsEl = document.getElementById('r-assumptions');
+  if (assumptionsEl) assumptionsEl.textContent = `Projected pot assumes 5% growth a year. Take-home includes Income Tax and National Insurance. Based on ${TAX.taxYear} rates.`;
+
   // Relief on the additional escape contribution (marginal, not from zero)
   const escapeRelief   = Math.max(0, engCurrent.totalTax - engEscape.totalTax);
   const escapeRealCost = Math.max(0, escapeGap - escapeRelief);
@@ -1426,7 +1449,7 @@ function renderResults() {
   if (divs > 0) {
     knowing.push({ title: divs <= 500 ? 'Your dividends are tax-free' : 'Part of your dividends are taxable', body: divs <= 500 ? `Your ${fmt(divs)} in dividends falls within the £500 annual allowance.` : `The first £500 of your dividends is tax-free. The rest is taxed at dividend rates.` });
   }
-  knowing.push({ title: 'You can\'t access this until 57', body: 'Pension money is locked until age 57 (rising to 58 by 2028). Make sure you have accessible savings for anything you might need before then.' });
+  knowing.push({ title: 'This money is locked away for years', body: 'Most pensions let you take money from 55 today, rising to 57 from April 2028. Your scheme\'s rules may differ. Make sure you have accessible savings for anything you might need before then.' });
   document.getElementById('r-knowing').innerHTML = knowing.map(k => `
     <div class="knowing-item">${infoIcon}<div><div class="knowing-title">${k.title}</div><div class="knowing-body">${k.body}</div></div></div>`).join('');
 
@@ -1461,7 +1484,7 @@ function renderResults() {
       ${r.sub ? `<div class="stat-sub">${r.sub}</div>` : ''}
     </div>`).join('')
     + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">Self-assessment required</div><div class="sa-warn-body">${fmt(modelled.saRelief)} must be claimed via self-assessment. Register at <strong>gov.uk/self-assessment</strong>.</div></div>` : '')
-    + `<div class="disclaimer">Based on 2026/27 HMRC rates for England &amp; Wales. Illustrative only — not financial advice.</div>`;
+    + `<div class="disclaimer">Based on 2026/27 HMRC rates for England, Wales &amp; Northern Ireland. Illustrative only — not financial advice.</div>`;
 
   // ── Feedback hidden fields ──
   const sf = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
