@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HiddenWay — Escape the 60% tax trap</title>
+<title>HiddenWay: Escape the 60% tax trap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -36,6 +36,7 @@
   --sans: 'DM Sans', sans-serif;
   --radius: 20px;
   --radius-sm: 12px;
+  --note-space: 16px;
   --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
   --shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
 }
@@ -95,7 +96,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .input-field { margin-bottom: 20px; }
 .input-field:last-child { margin-bottom: 0; }
 .input-label { display: block; font-size: 13px; font-weight: 700; color: var(--stone-600); margin-bottom: 8px; letter-spacing: 0.02em; text-transform: uppercase; font-size: 10px; letter-spacing: 0.15em; }
-.input-hint { font-size: 12px; color: var(--stone-400); margin-top: 6px; }
+.input-hint { font-size: 13px; color: var(--stone-600); margin-top: 6px; line-height: 1.4; }
 .input-inner { position: relative; display: flex; align-items: center; }
 .input-pre, .input-suf { position: absolute; font-size: 16px; font-weight: 700; color: var(--stone-400); pointer-events: none; transition: color 0.2s; }
 .input-pre { left: 16px; }
@@ -108,7 +109,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .big-input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(196,113,74,0.12); }
 .input-inner:focus-within .input-pre,
 .input-inner:focus-within .input-suf { color: var(--terra); }
-.input-equiv { font-size: 13px; color: var(--stone-500); margin-top: 6px; min-height: 18px; }
+.input-equiv { font-size: 13px; color: var(--stone-600); margin-top: 6px; min-height: 18px; }
 
 /* Salary input with custom +/- */
 .salary-input-row { display: flex; align-items: center; gap: 10px; }
@@ -120,7 +121,31 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
 
 /* Tip lozenge */
-.step-tip { background: var(--sage-bg); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--stone-500); margin-top: 16px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; border: 1px solid #dde8dd; }
+.step-tip { background: var(--sage-bg); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--stone-500); margin: var(--note-space) 0; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; border: 1px solid #dde8dd; }
+
+/* Contribution method selector (Step 4) */
+.method-group { margin: var(--note-space) 0; }
+.method-options { display: flex; flex-direction: column; gap: 8px; }
+.method-option { text-align: left; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1.5px solid var(--stone-200); border-radius: var(--radius-sm); background: var(--white); cursor: pointer; font-family: var(--sans); transition: border-color 0.15s, background 0.15s; }
+.method-option:hover { border-color: var(--stone-400); }
+.method-option.active { border-color: var(--terra); background: var(--terra-light); }
+.method-option-text { display: flex; flex-direction: column; gap: 3px; }
+.method-option-title { font-size: 15px; font-weight: 700; color: var(--stone-900); }
+.method-option.active .method-option-title { color: var(--terra-text); }
+.method-option-sub { font-size: 13px; color: var(--stone-600); line-height: 1.4; }
+.method-radio { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--stone-400); position: relative; transition: border-color 0.15s; }
+.method-option.active .method-radio { border-color: var(--terra); }
+.method-option.active .method-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--terra); }
+.method-error { font-size: 13px; font-weight: 600; color: var(--terra-text); margin-top: 8px; }
+.method-error[hidden] { display: none; }
+
+/* Disclosure — one pattern */
+.disclosure { margin-top: var(--note-space); }
+.disclosure summary { font-size: 13px; font-weight: 700; color: var(--terra-text); cursor: pointer; list-style: none; padding: 2px 0; }
+.disclosure summary::-webkit-details-marker { display: none; }
+.disclosure summary::after { content: '  ↓'; font-weight: 400; }
+.disclosure[open] summary::after { content: '  ↑'; }
+.disclosure p { font-size: 13px; color: var(--stone-600); line-height: 1.6; margin-top: 8px; }
 .step-tip-icon { flex-shrink: 0; margin-top: 1px; color: var(--sage-dark); }
 
 /* Trap warning */
@@ -391,7 +416,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <div id="step2-body">
     <div class="step-num">Step 2 of 5</div>
     <div class="step-q" id="step2-q">What's your annual income?</div>
-    <div class="step-hint" id="step2-hint">A ballpark is fine — use the arrows to nudge in £1,000 steps.</div>
+    <div class="step-hint" id="step2-hint">A ballpark is fine. Use the arrows to nudge in £1,000 steps.</div>
     <div class="step-error" id="step2-error" style="display:none">Enter your income to continue.</div>
     <div class="step-prompt" id="step2-prompt">Choose how you earn above to see this.</div>
 
@@ -427,7 +452,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
 
     <div class="step-tip">
       <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
-      <span>The trap applies to income between £100,000 and £125,140. If you're outside this range the tool still works — you'll just see standard higher-rate relief.</span>
+      <span>The trap applies to income between £100,000 and £125,140. If you're outside this range the tool still works. You'll just see standard higher-rate relief.</span>
     </div>
 
     <div id="step2-answer-row" class="step-answer-row" style="display:none">
@@ -441,7 +466,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
   <div class="step-card" id="step3" tabindex="-1">
     <div class="step-num">Step 3 of 5</div>
     <div class="step-q">Any other income?</div>
-    <div class="step-hint">Dividends, savings interest, rental profit. Skip if it's just your salary — you can always come back.</div>
+    <div class="step-hint">Dividends, savings interest, rental profit. Skip if it's just your salary. You can always come back.</div>
 
     <div class="optional-toggle" id="other-income-toggle" onclick="toggleOtherIncome()">
       <span class="optional-toggle-label">Add other income</span>
@@ -486,7 +511,6 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
   <div class="step-card" id="step4" tabindex="-1">
     <div class="step-num">Step 4 of 5</div>
     <div class="step-q">What are your current pension contributions?</div>
-    <div class="step-hint">Your contribution: a % of salary or a fixed annual amount.</div>
 
     <div class="contrib-mode-toggle">
       <button class="contrib-mode-btn active" id="mode-pct" onclick="setContribMode('pct')" aria-pressed="true">% of salary</button>
@@ -496,7 +520,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <div class="input-field" id="contrib-pct-field">
       <div class="input-label">Your contribution</div>
       <div class="input-inner">
-        <input type="number" class="big-input no-pre has-suf" id="contrib-pct" inputmode="numeric" placeholder="0" min="0" max="100" aria-label="Your pension contribution as a percentage of salary" oninput="onContribChange()">
+        <input type="number" class="big-input no-pre has-suf" id="contrib-pct" inputmode="numeric" placeholder="0" min="0" max="100" aria-label="Your pension contribution as a percentage of your income" oninput="onContribChange()">
         <span class="input-suf">%</span>
       </div>
       <div class="input-equiv" id="contrib-equiv"></div>
@@ -510,10 +534,41 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
       <div class="input-equiv" id="contrib-gbp-equiv"></div>
     </div>
 
-    <div class="step-tip" id="contrib-method-note">
-      <svg class="step-tip-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7.5" r="6.5" stroke="#7a9e8a" stroke-width="1.4"/><path d="M7.5 7v4" stroke="#7a9e8a" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="4.5" r="0.8" fill="#7a9e8a"/></svg>
-      <span>These figures assume relief at source or net pay. If you pay by salary sacrifice, your contribution already comes out of your pay before tax — enter your salary as shown and leave this at zero, so it isn't counted twice. Salary sacrifice also saves National Insurance, which this tool doesn't yet model.</span>
+    <!-- Contribution method — employed path only, no default -->
+    <div class="method-group" id="contrib-method-group" style="display:none">
+      <div class="input-label">How do you contribute?</div>
+      <div class="method-options" role="radiogroup" aria-label="How do you contribute?">
+        <button type="button" class="method-option" id="method-sacrifice" role="radio" aria-checked="false" onclick="setContribMethod('sacrifice')">
+          <span class="method-option-text">
+            <span class="method-option-title">Salary sacrifice</span>
+            <span class="method-option-sub">My salary is reduced and my employer pays in the difference</span>
+          </span>
+          <span class="method-radio" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="method-option" id="method-netpay" role="radio" aria-checked="false" onclick="setContribMethod('netpay')">
+          <span class="method-option-text">
+            <span class="method-option-title">From pay, before tax</span>
+            <span class="method-option-sub">Taken from my pay before tax is worked out (net pay)</span>
+          </span>
+          <span class="method-radio" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="method-option" id="method-ras" role="radio" aria-checked="false" onclick="setContribMethod('ras')">
+          <span class="method-option-text">
+            <span class="method-option-title">I pay in myself</span>
+            <span class="method-option-sub">I move money into my pension myself, for example into a SIPP or personal pension</span>
+          </span>
+          <span class="method-radio" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="method-error" id="method-error" hidden>Choose how you contribute to see your results.</div>
+      <details class="disclosure">
+        <summary>Not sure which you have?</summary>
+        <p>Check a payslip. If your pension line reduces your gross salary, it's salary sacrifice. If it's deducted before tax is calculated, it's from pay before tax. If you transfer money in yourself, your provider adds basic rate tax relief and you claim the rest through your tax return.</p>
+      </details>
     </div>
+
+    <!-- Self-employed path: relief at source, no selector -->
+    <div class="input-hint" id="contrib-self-note" style="display:none">Contributions to a personal pension get tax relief added automatically.</div>
 
     <!-- Employer contribution — shown for employed only -->
     <div id="employer-field" style="display:none;margin-top:4px;">
@@ -524,7 +579,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
           <span class="input-suf">%</span>
         </div>
         <div class="input-equiv" id="employer-equiv"></div>
-        <div class="input-hint">Check your scheme rules — some employers only contribute if you do.</div>
+        <div class="input-hint">Check your scheme rules. Some employers only contribute if you do.</div>
       </div>
     </div>
 
@@ -543,7 +598,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
   <div class="step-card" id="step5" tabindex="-1">
     <div class="step-num">Step 5 of 5</div>
     <div class="step-q">Your pension so far</div>
-    <div class="step-hint">Rough figures are fine — this helps project your pot at retirement.</div>
+    <div class="step-hint">Rough figures are fine. This helps project your pot at retirement.</div>
     <div class="grid-2">
       <div class="input-field">
         <div class="input-label">Existing pot</div>
@@ -657,7 +712,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
           No
         </button>
       </div>
-      <p class="feedback-thanks" id="feedback-thanks">Thanks — that's useful. If something wasn't clear, we'd love to know. <a href="mailto:hiddenwayapp@gmail.com" style="color:var(--stone-500);text-decoration:underline;">hiddenwayapp@gmail.com</a></p>
+      <p class="feedback-thanks" id="feedback-thanks">Thanks, that's useful. If something wasn't clear, we'd love to know. <a href="mailto:hiddenwayapp@gmail.com" style="color:var(--stone-500);text-decoration:underline;">hiddenwayapp@gmail.com</a></p>
       <input type="hidden" id="fb-salary">
       <input type="hidden" id="fb-escape">
       <input type="hidden" id="fb-relief">
@@ -672,7 +727,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
       <div class="footer-brand-dot"></div>
       <span class="footer-brand-name">HiddenWay</span>
     </div>
-    <span class="footer-tagline">Illustrative only — not financial advice.</span>
+    <span class="footer-tagline">Illustrative only. Not financial advice.</span>
   </div>
   <div class="footer-links">
     <a href="privacy.html" class="footer-link">Privacy</a>
@@ -693,6 +748,7 @@ const S = {
   savings: 0,
   rental: 0,
   contribMode: 'pct',
+  contribMethod: null,
   contribPct: 0,
   contribGbp: 0,
   employerContrib: 0,
@@ -773,6 +829,9 @@ function getGrossSalary() {
   return S.selfIncome;
 }
 
+// "salary" for employed, "profit" for self-employed — used in contribution copy.
+function incomeWord() { return S.earningType === 'self' ? 'profit' : 'salary'; }
+
 function runEngine({ salary, empContrib, employerPct, dividends, savings, rental }) {
   const gross = salary + (dividends||0) + (savings||0) + (rental||0);
   const nonSavings = Math.max(0, salary + (rental||0) - empContrib);
@@ -813,16 +872,27 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
       + Math.max(0, divTaxable - remBasicForDivs - remHigherForDivs) * TAX.divAdditional
     : 0;
 
-  const ni = S.earningType === 'self' ? calcNI4(salary) : calcNI(salary);
+  // Contribution method drives National Insurance and how relief is delivered.
+  // Self-employed can only use relief at source. Salary sacrifice reduces NI-able pay;
+  // net pay and relief at source leave NI on full pay.
+  const method = S.earningType === 'self' ? 'ras' : S.contribMethod;
+  const niBase = method === 'sacrifice' ? Math.max(0, salary - empContrib) : salary;
+  const ni = S.earningType === 'self' ? calcNI4(salary) : calcNI(niBase);
   const totalTax = nonSavingsItax + st + dt + ni;
   const takeHome = gross - empContrib - totalTax;
 
-  // Relief = income tax with no contribution minus income tax after contributing
+  // Income-tax relief = tax with no contribution minus tax after contributing
   const origTax = incomeTax(taxable + empContrib, getPA(taxable + empContrib));
   const redTax = incomeTax(taxable, getPA(taxable));
-  const relief = origTax - redTax;
+  const itaxRelief = origTax - redTax;
 
-  const saRelief = taxable > TAX.basicLimit ? empContrib * (TAX.higher - TAX.basic) : 0;
+  // Salary sacrifice also saves National Insurance; add that to the relief shown.
+  const niSaved = method === 'sacrifice' ? calcNI(salary) - calcNI(Math.max(0, salary - empContrib)) : 0;
+  const relief = itaxRelief + niSaved;
+
+  // Higher/additional-rate relief that must be claimed via self-assessment.
+  // Only relief at source needs an active claim; net pay and sacrifice are automatic.
+  const saRelief = (method === 'ras' && taxable > TAX.basicLimit) ? empContrib * (TAX.higher - TAX.basic) : 0;
   const is60 = taxable > 100000 && taxable < 125140;
 
   return {
@@ -833,6 +903,8 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
     totalPension: Math.round(empContrib + salary * (employerPct||0) / 100),
     employerAmt: Math.round(salary * (employerPct||0) / 100),
     relief: Math.round(relief),
+    niSaved: Math.round(niSaved),
+    method,
     saRelief: Math.round(saRelief),
     pa: Math.round(pa),
     effectiveRate: Math.round((totalTax / Math.max(1, gross)) * 100),
@@ -1033,7 +1105,7 @@ function updateAnswerRows() {
   document.getElementById('step3-answer').textContent = extras.length ? 'Other income included' : 'No other income';
   const contrib = getCurrentContrib();
   document.getElementById('step4-answer').textContent = S.contribMode === 'pct'
-    ? S.contribPct + '% of salary (' + fmt(contrib) + '/yr)'
+    ? S.contribPct + '% of ' + incomeWord() + ' (' + fmt(contrib) + '/yr)'
     : fmt(contrib) + ' per year';
 }
 
@@ -1102,6 +1174,29 @@ function setEarningType(type) {
   const labels = { paye: 'Employed', self: 'Self-employed' };
   document.getElementById('step1-answer').textContent = labels[type];
 
+  // Step 4 contribution-method UI by earning type
+  const modeBtn = document.getElementById('mode-pct');
+  if (modeBtn) modeBtn.textContent = '% of ' + (type === 'self' ? 'profit' : 'salary');
+  const methodGroup = document.getElementById('contrib-method-group');
+  const selfNote = document.getElementById('contrib-self-note');
+  if (type === 'self') {
+    S.contribMethod = 'ras';   // sole traders can only use relief at source
+    if (methodGroup) methodGroup.style.display = 'none';
+    if (selfNote) selfNote.style.display = '';
+  } else {
+    if (methodGroup) methodGroup.style.display = '';
+    if (selfNote) selfNote.style.display = 'none';
+    if (changed) {
+      S.contribMethod = null;   // require an explicit choice, no default
+      ['sacrifice','netpay','ras'].forEach(m => {
+        const b = document.getElementById('method-' + m);
+        if (b) { b.classList.remove('active'); b.setAttribute('aria-checked', 'false'); }
+      });
+      const err = document.getElementById('method-error');
+      if (err) err.hidden = true;
+    }
+  }
+
   if (type === 'self') {
     // Gate: reveal the limited-company check first, income fields wait for an answer
     document.getElementById('paye-fields').style.display = 'none';
@@ -1137,6 +1232,9 @@ function setOwnerAnswer(isOwner) {
   if (isOwner) {
     document.getElementById('not-supported-card').style.display = 'block';
     document.getElementById('step2-body').style.display = 'none';
+    const s2 = document.getElementById('step2');
+    s2.classList.remove('entered', 'completed');
+    s2.classList.add('active');
     ['step3','step4','step5','form-submit'].forEach(id => {
       const el = document.getElementById(id); if (el) el.style.display = 'none';
     });
@@ -1223,6 +1321,20 @@ function setContribMode(mode) {
   updateAnswerRows();
 }
 
+function setContribMethod(method) {
+  S.contribMethod = method;
+  ['sacrifice','netpay','ras'].forEach(m => {
+    const btn = document.getElementById('method-' + m);
+    if (!btn) return;
+    const on = m === method;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  const err = document.getElementById('method-error');
+  if (err) err.hidden = true;
+  updateAnswerRows();
+}
+
 function getCurrentContrib() {
   const salary = getGrossSalary();
   if (S.contribMode === 'pct') return Math.round(salary * S.contribPct / 100);
@@ -1260,7 +1372,7 @@ function onContribGbpChange() {
   const salary = getGrossSalary();
   const equiv = document.getElementById('contrib-gbp-equiv');
   if (equiv && S.contribGbp > 0 && salary > 0) {
-    equiv.textContent = '= ' + (S.contribGbp / salary * 100).toFixed(1) + '% of salary';
+    equiv.textContent = '= ' + (S.contribGbp / salary * 100).toFixed(1) + '% of ' + incomeWord();
   } else if (equiv) {
     equiv.textContent = '';
   }
@@ -1294,6 +1406,13 @@ function showResults() {
   const salary = getGrossSalary();
   if (!S.earningType) { flagStep('step1', 'step1-error'); return; }
   if (!salary || salary < 1000) { flagStep('step2', 'step2-error'); return; }
+  if (S.earningType === 'paye' && !S.contribMethod) {
+    const err = document.getElementById('method-error');
+    if (err) err.hidden = false;
+    setActiveStep(4);
+    document.getElementById('step4').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
 
   const ownContrib = getCurrentContrib();
   const grossIncome = salary + S.dividends + S.savings + S.rental;
@@ -1371,21 +1490,21 @@ function renderResults() {
   const N = document.getElementById('r-outcome-nudge');
   const setNudge = t => { if (!N) return; if (t) { N.textContent = t; N.hidden = false; } else { N.textContent = ''; N.hidden = true; } };
   if (bandA) {
-    H.innerHTML = "Good news — you're not caught in the 60% trap.";
+    H.innerHTML = "Good news. You're not caught in the 60% trap.";
     E.textContent = "You earn under £100,000, so you keep your full tax-free personal allowance. There's nothing to escape.";
     setNudge("If you want to see what paying in more would do to your tax now and your pot later, try the slider below.");
   } else if (alreadyOut) {
-    H.innerHTML = "Good news — your contributions already keep you out of the trap.";
+    H.innerHTML = "Good news. Your contributions already keep you out of the trap.";
     E.textContent = "You earn over £100,000, but what you pay into your pension brings your taxable income back under the threshold. Your full personal allowance is intact.";
     setNudge("Use the slider below to see what a higher or lower contribution would do.");
   } else if (canEscape) {
     H.innerHTML = `You could reclaim <strong>${fmt(escapeRelief)}</strong> by paying in <strong>${fmt(escapeGap)}</strong>. The real cost to you is <strong>${fmt(escapeRealCost)}</strong>.`;
     E.textContent = bandB
-      ? "Once you earn over £100,000, HMRC quietly takes away your tax-free personal allowance — bit by bit, as you earn more. It means part of your income is taxed at around 60%. Far more than you'd expect."
-      : "Once you earn over £125,140, HMRC has taken your whole tax-free personal allowance. Paying into a pension brings it back — and part of what you put in saves you around 60% in tax.";
+      ? "Once you earn over £100,000, HMRC quietly takes away your tax-free personal allowance, bit by bit, as you earn more. It means part of your income is taxed at around 60%. Far more than you'd expect."
+      : "Once you earn over £125,140, HMRC has taken your whole tax-free personal allowance. Paying into a pension brings it back, and part of what you put in saves you around 60% in tax.";
     setNudge('');
   } else { // bandD
-    H.innerHTML = "You can't fully escape the trap this year — but paying in still pays off.";
+    H.innerHTML = "You can't fully escape the trap this year, but paying in still pays off.";
     E.textContent = `To bring your income back under £100,000 you'd need to pay in ${fmt(escapeGap)}. That's more than the £60,000 you can put into a pension in one year, so full escape isn't possible this year.`;
     setNudge("A contribution still helps: every £1 you pay in cuts your tax and grows your pot. Model it with the slider below.");
   }
@@ -1426,7 +1545,7 @@ function renderResults() {
   animateVal('rc-val-2', modelled.pa, v => '£' + Math.abs(v).toLocaleString('en-GB'));
   document.getElementById('rc-sub-2').textContent = modelled.pa >= 12570 ? 'fully restored ✓' : modelled.pa > 0 ? 'partially restored' : 'fully removed';
 
-  document.getElementById('rc-label-3').textContent = 'Tax relief';
+  document.getElementById('rc-label-3').textContent = modelled.method === 'sacrifice' ? 'Tax & NI relief' : 'Tax relief';
   animateVal('rc-val-3', modelled.relief, v => '£' + Math.abs(v).toLocaleString('en-GB'));
   document.getElementById('rc-sub-3').textContent = 'this year';
 
@@ -1441,7 +1560,7 @@ function renderResults() {
   const infoIcon = `<svg class="knowing-icon" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M11 10v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="7.5" r="0.8" fill="currentColor"/></svg>`;
   const knowing = [];
   if (modelled.saRelief > 0) {
-    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically — you need to claim it via a self-assessment return. Register at gov.uk/self-assessment.` });
+    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically. You need to claim it via a self-assessment return. Register at gov.uk/self-assessment.` });
   }
   if (canEscape && modelled.pa < 12570 && modelled.pa > 0) {
     knowing.push({ title: 'Your allowance is still reduced', body: `At this level you've brought back ${fmt(modelled.pa)} of your £12,570 allowance. Paying in ${fmt(Math.max(0, escapeTotal - sliderAmt))} more restores the rest.` });
@@ -1484,7 +1603,7 @@ function renderResults() {
       ${r.sub ? `<div class="stat-sub">${r.sub}</div>` : ''}
     </div>`).join('')
     + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">Self-assessment required</div><div class="sa-warn-body">${fmt(modelled.saRelief)} must be claimed via self-assessment. Register at <strong>gov.uk/self-assessment</strong>.</div></div>` : '')
-    + `<div class="disclaimer">Based on 2026/27 HMRC rates for England, Wales &amp; Northern Ireland. Illustrative only — not financial advice.</div>`;
+    + `<div class="disclaimer">Based on 2026/27 HMRC rates for England, Wales &amp; Northern Ireland. Illustrative only. Not financial advice.</div>`;
 
   // ── Feedback hidden fields ──
   const sf = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
@@ -1559,6 +1678,15 @@ function resetForm() {
   ['owner-yes','owner-no'].forEach(id => {
     const btn = document.getElementById(id); if (btn) { btn.classList.remove('active'); btn.setAttribute('aria-pressed', 'false'); }
   });
+  // Reset contribution method
+  S.contribMethod = null;
+  ['sacrifice','netpay','ras'].forEach(m => {
+    const b = document.getElementById('method-' + m);
+    if (b) { b.classList.remove('active'); b.setAttribute('aria-checked', 'false'); }
+  });
+  document.getElementById('contrib-method-group').style.display = 'none';
+  document.getElementById('contrib-self-note').style.display = 'none';
+  document.getElementById('method-error').hidden = true;
   ['step3','step4','step5','form-submit'].forEach(id => {
     const el = document.getElementById(id); if (el) el.style.display = '';
   });
