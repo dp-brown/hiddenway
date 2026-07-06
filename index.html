@@ -206,10 +206,18 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .results-break { margin: 40px 0 20px; padding-top: 32px; border-top: 1px solid var(--stone-200); }
 .results-break-heading { font-size: clamp(1.3rem, 3.5vw, 1.7rem); font-weight: 900; letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 8px; color: var(--stone-900); }
 .results-break-sub { font-size: 15px; color: var(--stone-500); line-height: 1.6; max-width: 440px; }
-.slider-notch-wrap { position: relative; padding-top: 22px; }
+.slider-notch-wrap { position: relative; padding-top: 38px; }
 .slider-notch-wrap.no-notches { padding-top: 0; }
-.slider-notch { position: absolute; top: 0; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--terra-text); letter-spacing: 0.05em; white-space: nowrap; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.slider-notch-line { width: 1.5px; height: 8px; background: var(--terra); opacity: 0.6; border-radius: 1px; }
+.slider-notch-wrap.stacked { padding-top: 66px; }
+.slider-notch { position: absolute; top: 0; transform: translateX(-50%); pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 0; }
+.notch-pill { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap; padding: 3px 9px; border-radius: 999px; }
+.notch-escape .notch-pill { background: var(--terra); color: #fff; }
+.notch-current .notch-pill { background: var(--white); color: var(--stone-500); box-shadow: inset 0 0 0 1.5px var(--stone-200); }
+.slider-notch-line { width: 2px; height: 12px; border-radius: 1px; }
+.notch-escape .slider-notch-line { background: var(--terra); }
+.notch-current .slider-notch-line { background: var(--stone-400); }
+.stacked .notch-escape { top: 28px; }
+.notch-raised .slider-notch-line { height: 40px; }
 
 /* Slider factory CSS */
 .slider-wrap { position: relative; padding-top: 44px; padding-bottom: 8px; margin-bottom: 4px; }
@@ -654,13 +662,13 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <!-- Slider -->
     <div class="results-slider-card">
       <div class="slider-notch-wrap" id="slider-notch-wrap">
-        <div class="slider-notch" id="r-escape-notch" style="display:none">
-          <span id="r-escape-notch-label"></span>
+        <div class="slider-notch notch-escape" id="r-escape-notch" style="display:none">
+          <span class="notch-pill" id="r-escape-notch-label"></span>
           <div class="slider-notch-line"></div>
         </div>
-        <div class="slider-notch" id="r-current-notch" style="display:none">
-          <span id="r-current-notch-label" style="font-size:9px;font-weight:700;letter-spacing:0.05em;white-space:nowrap;color:var(--stone-400)"></span>
-          <div class="slider-notch-line" style="background:var(--stone-400)"></div>
+        <div class="slider-notch notch-current" id="r-current-notch" style="display:none">
+          <span class="notch-pill" id="r-current-notch-label"></span>
+          <div class="slider-notch-line"></div>
         </div>
         <div id="results-slider-wrap"></div>
       </div>
@@ -797,11 +805,11 @@ function getPA(income) {
   return Math.max(0, TAX.pa - Math.floor((income - 100000) / 2));
 }
 
-function incomeTax(taxable, pa) {
+function incomeTax(taxable, pa, bandExt = 0) {
   if (taxable <= 0) return 0;
   const above = Math.max(0, taxable - pa);
-  const BRB = TAX.basicLimit - TAX.pa;       // 37,700 — fixed basic-rate band on taxable income
-  const higherTop = TAX.higherLimit - pa;    // additional-rate threshold in taxable-income terms
+  const BRB = TAX.basicLimit - TAX.pa + bandExt;    // basic-rate band, extended by gross RAS contributions
+  const higherTop = TAX.higherLimit - pa + bandExt; // additional-rate threshold, extended likewise
   const b = Math.min(above, BRB) * TAX.basic;
   const h = Math.min(Math.max(0, above - BRB), Math.max(0, higherTop - BRB)) * TAX.higher;
   const a = Math.max(0, above - higherTop) * TAX.additional;
@@ -833,13 +841,24 @@ function getGrossSalary() {
 function incomeWord() { return S.earningType === 'self' ? 'profit' : 'salary'; }
 
 function runEngine({ salary, empContrib, employerPct, dividends, savings, rental }) {
-  const gross = salary + (dividends||0) + (savings||0) + (rental||0);
-  const nonSavings = Math.max(0, salary + (rental||0) - empContrib);
-  const taxable = Math.max(0, gross - empContrib);
-  const pa = getPA(taxable);
+  // The contribution method drives the whole model.
+  // Net pay and salary sacrifice reduce taxable income directly.
+  // Relief at source (RAS) does not: it extends the tax bands by the gross
+  // contribution and restores the personal allowance via adjusted net income,
+  // while the provider adds 20% inside the pension. Self-employed is always RAS.
+  const method = S.earningType === 'self' ? 'ras' : S.contribMethod;
+  const isRAS = method === 'ras';
+  const deduct = isRAS ? 0 : empContrib;
+  const bandExt = isRAS ? empContrib : 0;
 
-  const BRB = TAX.basicLimit - TAX.pa;       // 37,700 — fixed basic-rate band on taxable income
-  const higherTop = TAX.higherLimit - pa;    // additional-rate threshold in taxable-income terms
+  const gross = salary + (dividends||0) + (savings||0) + (rental||0);
+  const ani = Math.max(0, gross - empContrib);   // adjusted net income: every method reduces it
+  const nonSavings = Math.max(0, salary + (rental||0) - deduct);
+  const taxable = Math.max(0, gross - deduct);
+  const pa = getPA(ani);
+
+  const BRB = TAX.basicLimit - TAX.pa + bandExt;    // basic-rate band on taxable income
+  const higherTop = TAX.higherLimit - pa + bandExt; // additional-rate threshold in taxable-income terms
 
   const nonSavingsTaxable = Math.max(0, nonSavings - pa);
   const nsBasic = Math.min(nonSavingsTaxable, BRB);
@@ -854,7 +873,8 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
   const nonSavingsAbovePA = Math.max(0, nonSavings - pa);
   const basicRemainingAfterNonSavings = Math.max(0, BRB - nonSavingsAbovePA);
   const higherRemainingAfterNonSavings = Math.max(0, (higherTop - BRB) - Math.max(0, nonSavingsAbovePA - BRB));
-  const psa = nonSavings <= TAX.basicLimit ? TAX.psaBasic : nonSavings <= TAX.higherLimit ? TAX.psaHigher : 0;
+  // PSA band is set by total income, not non-savings income alone.
+  const psa = taxable <= TAX.basicLimit + bandExt ? TAX.psaBasic : taxable <= TAX.higherLimit + bandExt ? TAX.psaHigher : 0;
   const savingsTaxable = Math.max(0, savingsAbovePA - psa);
   const savingsInBasic = Math.min(savingsTaxable, basicRemainingAfterNonSavings);
   const savingsInHigher = Math.min(Math.max(0, savingsTaxable - basicRemainingAfterNonSavings), higherRemainingAfterNonSavings);
@@ -872,28 +892,30 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
       + Math.max(0, divTaxable - remBasicForDivs - remHigherForDivs) * TAX.divAdditional
     : 0;
 
-  // Contribution method drives National Insurance and how relief is delivered.
-  // Self-employed can only use relief at source. Salary sacrifice reduces NI-able pay;
-  // net pay and relief at source leave NI on full pay.
-  const method = S.earningType === 'self' ? 'ras' : S.contribMethod;
+  // Salary sacrifice reduces NI-able pay; net pay and RAS leave NI on full pay.
   const niBase = method === 'sacrifice' ? Math.max(0, salary - empContrib) : salary;
   const ni = S.earningType === 'self' ? calcNI4(salary) : calcNI(niBase);
   const totalTax = nonSavingsItax + st + dt + ni;
-  const takeHome = gross - empContrib - totalTax;
 
-  // Income-tax relief = tax with no contribution minus tax after contributing
-  const origTax = incomeTax(taxable + empContrib, getPA(taxable + empContrib));
-  const redTax = incomeTax(taxable, getPA(taxable));
-  const itaxRelief = origTax - redTax;
+  // Cash the user actually hands over: RAS is paid net of basic-rate relief.
+  const userPays = isRAS ? empContrib * (1 - TAX.basic) : empContrib;
+  const takeHome = gross - userPays - totalTax;
+
+  // Relief. Net pay and sacrifice: all in payroll, automatic.
+  // RAS: 20% added at source by the provider; the rest (extended bands plus
+  // restored allowance) comes back through the tax return.
+  const rasAtSource = isRAS ? empContrib * TAX.basic : 0;
+  const noContribTax = incomeTax(gross, getPA(gross));
+  const withContribTax = isRAS ? incomeTax(gross, pa, empContrib) : incomeTax(taxable, pa);
+  const itaxRelief = Math.max(0, noContribTax - withContribTax);
 
   // Salary sacrifice also saves National Insurance; add that to the relief shown.
   const niSaved = method === 'sacrifice' ? calcNI(salary) - calcNI(Math.max(0, salary - empContrib)) : 0;
-  const relief = itaxRelief + niSaved;
+  const relief = itaxRelief + niSaved + rasAtSource;
 
-  // Higher/additional-rate relief that must be claimed via self-assessment.
-  // Only relief at source needs an active claim; net pay and sacrifice are automatic.
-  const saRelief = (method === 'ras' && taxable > TAX.basicLimit) ? empContrib * (TAX.higher - TAX.basic) : 0;
-  const is60 = taxable > 100000 && taxable < 125140;
+  // The part that must be actively claimed via self-assessment (RAS only).
+  const saRelief = isRAS ? itaxRelief : 0;
+  const is60 = ani > 100000 && ani < 125140;
 
   return {
     takeHome: Math.round(takeHome),
@@ -909,6 +931,7 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
     pa: Math.round(pa),
     effectiveRate: Math.round((totalTax / Math.max(1, gross)) * 100),
     is60, gross: Math.round(gross),
+    ani: Math.round(ani), userPays: Math.round(userPays),
   };
 }
 
@@ -1480,9 +1503,15 @@ function renderResults() {
   const assumptionsEl = document.getElementById('r-assumptions');
   if (assumptionsEl) assumptionsEl.textContent = `Projected pot assumes 5% growth a year. Take-home includes Income Tax and National Insurance. Based on ${TAX.taxYear} rates.`;
 
-  // Relief on the additional escape contribution (marginal, not from zero)
-  const escapeRelief   = Math.max(0, engCurrent.totalTax - engEscape.totalTax);
-  const escapeRealCost = Math.max(0, escapeGap - escapeRelief);
+  // Relief on the additional escape contribution (marginal, not from zero).
+  // Tax saved comes off the bill; for RAS the provider also adds 20% at source,
+  // and the user only hands over the net 80%.
+  const method = engCurrent.method;
+  const escapeTaxSaved = Math.max(0, engCurrent.totalTax - engEscape.totalTax);
+  const escapeAtSource = method === 'ras' ? Math.round(escapeGap * TAX.basic) : 0;
+  const escapeUserPays = method === 'ras' ? Math.round(escapeGap * (1 - TAX.basic)) : escapeGap;
+  const escapeRelief   = escapeTaxSaved + escapeAtSource;
+  const escapeRealCost = Math.max(0, escapeUserPays - escapeTaxSaved);
 
   // ── Opportunity card ──
   const H = document.getElementById('r-headline');
@@ -1495,10 +1524,16 @@ function renderResults() {
     setNudge("If you want to see what paying in more would do to your tax now and your pot later, try the slider below.");
   } else if (alreadyOut) {
     H.innerHTML = "Good news. Your contributions already keep you out of the trap.";
-    E.textContent = "You earn over £100,000, but what you pay into your pension brings your taxable income back under the threshold. Your full personal allowance is intact.";
+    E.textContent = "You earn over £100,000, but what you pay into your pension brings your income, as HMRC measures it, back under the threshold. Your full personal allowance is intact.";
     setNudge("Use the slider below to see what a higher or lower contribution would do.");
   } else if (canEscape) {
-    H.innerHTML = `You could reclaim <strong>${fmt(escapeRelief)}</strong> by paying in <strong>${fmt(escapeGap)}</strong>. The real cost to you is <strong>${fmt(escapeRealCost)}</strong>.`;
+    if (method === 'ras') {
+      H.innerHTML = `A <strong>${fmt(escapeGap)}</strong> pension contribution really costs you <strong>${fmt(escapeRealCost)}</strong>. You pay in ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back through your tax return.`;
+    } else if (method === 'sacrifice') {
+      H.innerHTML = `Sacrificing <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`;
+    } else {
+      H.innerHTML = `Paying in <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong>. The tax saving happens automatically in your pay.`;
+    }
     E.textContent = bandB
       ? "Once you earn over £100,000, HMRC quietly takes away your tax-free personal allowance, bit by bit, as you earn more. It means part of your income is taxed at around 60%. Far more than you'd expect."
       : "Once you earn over £125,140, HMRC has taken your whole tax-free personal allowance. Paying into a pension brings it back, and part of what you put in saves you around 60% in tax.";
@@ -1537,6 +1572,19 @@ function renderResults() {
     if (currentNotch) currentNotch.style.display = 'none';
   }
   if (notchWrap) notchWrap.classList.toggle('no-notches', !anyNotch);
+
+  // Collision: if the two pills would touch, lift Current to a second row.
+  currentNotch?.classList.remove('notch-raised');
+  notchWrap?.classList.remove('stacked');
+  if (notch && currentNotch && notch.style.display !== 'none' && currentNotch.style.display !== 'none') {
+    requestAnimationFrame(() => {
+      const a = notch.getBoundingClientRect();
+      const b = currentNotch.getBoundingClientRect();
+      const touching = a.left < b.right + 8 && b.left < a.right + 8;
+      currentNotch.classList.toggle('notch-raised', touching);
+      notchWrap.classList.toggle('stacked', touching);
+    });
+  }
 
   // ── Stat cards ──
   animateVal('rc-val-1', modelled.takeHomeMonthly, v => '£' + Math.abs(v).toLocaleString('en-GB'));
