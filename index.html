@@ -136,8 +136,9 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .method-radio { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--stone-400); position: relative; transition: border-color 0.15s; }
 .method-option.active .method-radio { border-color: var(--terra); }
 .method-option.active .method-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--terra); }
-.method-error { font-size: 13px; font-weight: 600; color: var(--terra-text); margin-bottom: 10px; }
-.method-error[hidden] { display: none; }
+.method-error { font-size: 13px; font-weight: 600; color: var(--terra-text); margin-bottom: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--terra-light); border: 1.5px solid var(--terra); outline: none; }
+.method-error[hidden]:not(.show) { display: none; }
+.method-error.show { display: block; }
 .method-group.flash { animation: methodflash 0.9s ease; }
 @keyframes methodflash { 0%, 100% { background: transparent; } 30% { background: var(--terra-light); } }
 @media (prefers-reduced-motion: reduce) { .method-group.flash { animation: none; } }
@@ -1222,7 +1223,7 @@ function setEarningType(type) {
         if (b) { b.classList.remove('active'); b.setAttribute('aria-checked', 'false'); }
       });
       const err = document.getElementById('method-error');
-      if (err) err.hidden = true;
+      if (err) { err.hidden = true; err.classList.remove('show'); }
     }
   }
 
@@ -1360,7 +1361,7 @@ function setContribMethod(method) {
     btn.setAttribute('aria-checked', on ? 'true' : 'false');
   });
   const err = document.getElementById('method-error');
-  if (err) err.hidden = true;
+  if (err) { err.hidden = true; err.classList.remove('show'); }
   updateAnswerRows();
 }
 
@@ -1371,7 +1372,7 @@ function updateMethodVisibility() {
   grp.style.display = show ? '' : 'none';
   if (!show) {
     const err = document.getElementById('method-error');
-    if (err) err.hidden = true;
+    if (err) { err.hidden = true; err.classList.remove('show'); }
   }
 }
 
@@ -1461,16 +1462,21 @@ function showResults() {
   const ownContrib = getCurrentContrib();
   if (S.earningType === 'paye' && ownContrib > 0 && !S.contribMethod) {
     setActiveStep(4);
-    const err = document.getElementById('method-error');
     const grp = document.getElementById('contrib-method-group');
+    const err = document.getElementById('method-error');
     if (grp) grp.style.display = '';
-    if (err) err.hidden = false;
     document.getElementById('step4')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Re-assert after any scroll-driven re-render, and flash for attention.
-    setTimeout(() => {
-      if (err) err.hidden = false;
+    // Set visibility on the next frame so it survives any concurrent re-render,
+    // then move focus to the error so it can't be missed.
+    requestAnimationFrame(() => {
+      if (err) {
+        err.hidden = false;
+        err.classList.add('show');
+        err.setAttribute('tabindex', '-1');
+        err.focus({ preventScroll: true });
+      }
       if (grp) { grp.classList.remove('flash'); void grp.offsetWidth; grp.classList.add('flash'); }
-    }, 350);
+    });
     return;
   }
 
@@ -1797,7 +1803,7 @@ function resetForm() {
   });
   document.getElementById('contrib-method-group').style.display = 'none';
   document.getElementById('contrib-self-note').style.display = 'none';
-  document.getElementById('method-error').hidden = true;
+  { const me = document.getElementById('method-error'); me.hidden = true; me.classList.remove('show'); }
   ['step3','step4','step5','form-submit'].forEach(id => {
     const el = document.getElementById(id); if (el) el.style.display = '';
   });
