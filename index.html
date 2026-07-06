@@ -1615,9 +1615,20 @@ function renderResults() {
     E.textContent = "You earn under £100,000, so you keep your full tax-free personal allowance. There's nothing to escape.";
     setNudge("If you want to see what paying in more would do to your tax now and your pot later, try the slider below.");
   } else if (alreadyOut) {
-    H.innerHTML = "Good news. Your contributions already keep you out of the trap.";
-    E.textContent = "You earn over £100,000, but what you pay into your pension brings your income, as HMRC measures it, back under the threshold. Your full personal allowance is intact.";
-    setNudge("Use the slider below to see what a higher or lower contribution would do.");
+    const cur = engCurrent;
+    if (cur.method === 'ras') {
+      H.innerHTML = `Your <strong>${fmt(ownContrib)}</strong> contribution keeps you out of the trap. It really costs you <strong>${fmt(ownContrib - cur.relief)}</strong> after ${fmt(cur.relief)} of relief.`;
+    } else if (cur.method === 'sacrifice') {
+      H.innerHTML = `Your <strong>${fmt(ownContrib)}</strong> sacrifice keeps you out of the trap. It costs you <strong>${fmt(cur.userPays - cur.relief)}</strong> of take-home after tax and National Insurance relief.`;
+    } else {
+      H.innerHTML = `Your <strong>${fmt(ownContrib)}</strong> contribution keeps you out of the trap. It really costs you <strong>${fmt(ownContrib - cur.relief)}</strong> after ${fmt(cur.relief)} of relief.`;
+    }
+    E.textContent = "You earn over £100,000, but your pension brings your income, as HMRC measures it, back under the threshold. Your full personal allowance is intact.";
+    if (cur.saRelief > 0) {
+      setNudge(`${fmt(cur.saRelief)} of that relief doesn't arrive automatically. Claim it through a self-assessment return.`);
+    } else {
+      setNudge("Use the slider below to see what a higher or lower contribution would do.");
+    }
   } else if (canEscape) {
     const topUp = ownContrib > 0;
     const paLost = Math.max(0, TAX.pa - engCurrent.pa);   // allowance lost at their current contribution
