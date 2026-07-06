@@ -772,6 +772,8 @@ const S = {
 
 // Active step tracking
 let activeStep = 1;
+let _rendering = false;
+let _resultsRevealed = false;
 let breakdownOpen = false;
 let knowingOpen = false;
 
@@ -1133,6 +1135,7 @@ function updateAnswerRows() {
   document.getElementById('step4-answer').textContent = S.contribMode === 'pct'
     ? S.contribPct + '% of ' + incomeWord() + ' (' + fmt(contrib) + '/yr)'
     : fmt(contrib) + ' per year';
+  if (!_rendering) refreshIfShown();
 }
 
 function completeStep(n) {
@@ -1210,7 +1213,7 @@ function setEarningType(type) {
     if (methodGroup) methodGroup.style.display = 'none';
     if (selfNote) selfNote.style.display = '';
   } else {
-    if (methodGroup) methodGroup.style.display = '';
+    if (methodGroup) methodGroup.style.display = getCurrentContrib() > 0 ? '' : 'none';
     if (selfNote) selfNote.style.display = 'none';
     if (changed) {
       S.contribMethod = null;   // require an explicit choice, no default
@@ -1361,6 +1364,27 @@ function setContribMethod(method) {
   updateAnswerRows();
 }
 
+function updateMethodVisibility() {
+  const grp = document.getElementById('contrib-method-group');
+  if (!grp) return;
+  const show = S.earningType === 'paye' && getCurrentContrib() > 0;
+  grp.style.display = show ? '' : 'none';
+  if (!show) {
+    const err = document.getElementById('method-error');
+    if (err) err.hidden = true;
+  }
+}
+
+function refreshIfShown() {
+  if (_rendering) return;
+  const r = document.getElementById('results');
+  if (!r || !r.classList.contains('show')) return;
+  const salary = getGrossSalary();
+  if (!S.earningType || salary < 1000) return;
+  if (S.earningType === 'paye' && getCurrentContrib() > 0 && !S.contribMethod) return;
+  showResults();
+}
+
 function getCurrentContrib() {
   const salary = getGrossSalary();
   if (S.contribMode === 'pct') return Math.round(salary * S.contribPct / 100);
@@ -1390,6 +1414,7 @@ function onEmployerChange() {
 function onContribChange() {
   S.contribPct = parseFloat(document.getElementById('contrib-pct').value) || 0;
   updateContribEquiv();
+  updateMethodVisibility();
   updateAnswerRows();
 }
 
@@ -1402,6 +1427,7 @@ function onContribGbpChange() {
   } else if (equiv) {
     equiv.textContent = '';
   }
+  updateMethodVisibility();
   updateAnswerRows();
 }
 
@@ -1437,17 +1463,19 @@ function showResults() {
     setActiveStep(4);
     const err = document.getElementById('method-error');
     const grp = document.getElementById('contrib-method-group');
+    if (grp) grp.style.display = '';
     if (err) err.hidden = false;
-    if (grp) {
-      grp.classList.remove('flash');
-      void grp.offsetWidth;
-      grp.classList.add('flash');
-    }
     document.getElementById('step4')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Re-assert after any scroll-driven re-render, and flash for attention.
+    setTimeout(() => {
+      if (err) err.hidden = false;
+      if (grp) { grp.classList.remove('flash'); void grp.offsetWidth; grp.classList.add('flash'); }
+    }, 350);
     return;
   }
 
   const grossIncome = salary + S.dividends + S.savings + S.rental;
+  _rendering = true;
   const escapeTotal = Math.max(0, grossIncome - 100000);
   const adjNetIncome = grossIncome - ownContrib;
 
@@ -1471,13 +1499,16 @@ function showResults() {
   });
 
   renderResults();
-
-  // Land the results just inside the viewport top, after layout settles
-  requestAnimationFrame(() => {
-    const el = document.getElementById('results');
-    const y = el.getBoundingClientRect().top + window.scrollY - 16;
-    window.scrollTo({ top: y, behavior: 'smooth' });
-  });
+  _rendering = false;
+  // Scroll to results only on first reveal, not on live auto-refresh.
+  if (!_resultsRevealed) {
+    _resultsRevealed = true;
+    requestAnimationFrame(() => {
+      const el = document.getElementById('results');
+      const y = el.getBoundingClientRect().top + window.scrollY - 16;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  }
 }
 
 function renderResults() {
@@ -1738,6 +1769,7 @@ function resetForm() {
   document.getElementById('hero-section').style.display = 'block';
   document.getElementById('main-form').style.display = 'block';
   document.getElementById('results').classList.remove('show');
+  _resultsRevealed = false;
   // Reset step states
   for (let i = 1; i <= 5; i++) {
     const el = document.getElementById('step' + i);
