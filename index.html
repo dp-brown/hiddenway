@@ -791,6 +791,7 @@ const TAX = {
   divAllowance: 500, divBasic: 0.1075, divHigher: 0.3575, divAdditional: 0.3935,
   psaHigher: 500, psaBasic: 1000,
   niThresh: 12570, niUEL: 50270, ni1: 0.08, ni2: 0.02, niSelf1: 0.06,
+  annualAllowance: 60000,
 };
 
 // Scotland rates — kept in code, not exposed in UI yet
@@ -854,11 +855,15 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
   // while the provider adds 20% inside the pension. Self-employed is always RAS.
   const method = S.earningType === 'self' ? 'ras' : S.contribMethod;
   const isRAS = method === 'ras';
-  const deduct = isRAS ? 0 : empContrib;
-  const bandExt = isRAS ? empContrib : 0;
+  // Tax relief only applies to contributions up to the annual allowance, and
+  // never above relevant earnings. Anything beyond that gets no relief.
+  const relievable = Math.min(empContrib, TAX.annualAllowance, salary + (rental || 0));
+  const excess = Math.max(0, empContrib - relievable);
+  const deduct = isRAS ? 0 : relievable;
+  const bandExt = isRAS ? relievable : 0;
 
   const gross = salary + (dividends||0) + (savings||0) + (rental||0);
-  const ani = Math.max(0, gross - empContrib);   // adjusted net income: every method reduces it
+  const ani = Math.max(0, gross - relievable);   // adjusted net income: only relievable contributions reduce it
   const nonSavings = Math.max(0, salary + (rental||0) - deduct);
   const taxable = Math.max(0, gross - deduct);
   const pa = getPA(ani);
@@ -898,25 +903,24 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
       + Math.max(0, divTaxable - remBasicForDivs - remHigherForDivs) * TAX.divAdditional
     : 0;
 
-  // Salary sacrifice reduces NI-able pay; net pay and RAS leave NI on full pay.
-  const niBase = method === 'sacrifice' ? Math.max(0, salary - empContrib) : salary;
+  // Salary sacrifice reduces NI-able pay, but only up to the relievable amount.
+  const niBase = method === 'sacrifice' ? Math.max(0, salary - relievable) : salary;
   const ni = S.earningType === 'self' ? calcNI4(salary) : calcNI(niBase);
   const totalTax = nonSavingsItax + st + dt + ni;
 
-  // Cash the user actually hands over: RAS is paid net of basic-rate relief.
-  const userPays = isRAS ? empContrib * (1 - TAX.basic) : empContrib;
+  // Cash the user actually hands over. RAS relief only applies to the relievable part.
+  const userPays = isRAS ? (relievable * (1 - TAX.basic) + excess) : empContrib;
   const takeHome = gross - userPays - totalTax;
 
   // Relief. Net pay and sacrifice: all in payroll, automatic.
-  // RAS: 20% added at source by the provider; the rest (extended bands plus
-  // restored allowance) comes back through the tax return.
-  const rasAtSource = isRAS ? empContrib * TAX.basic : 0;
+  // RAS: 20% added at source by the provider on the relievable amount only.
+  const rasAtSource = isRAS ? relievable * TAX.basic : 0;
   const noContribTax = incomeTax(gross, getPA(gross));
-  const withContribTax = isRAS ? incomeTax(gross, pa, empContrib) : incomeTax(taxable, pa);
+  const withContribTax = isRAS ? incomeTax(gross, pa, relievable) : incomeTax(taxable, pa);
   const itaxRelief = Math.max(0, noContribTax - withContribTax);
 
-  // Salary sacrifice also saves National Insurance; add that to the relief shown.
-  const niSaved = method === 'sacrifice' ? calcNI(salary) - calcNI(Math.max(0, salary - empContrib)) : 0;
+  // Salary sacrifice also saves National Insurance, on the relievable amount.
+  const niSaved = method === 'sacrifice' ? calcNI(salary) - calcNI(Math.max(0, salary - relievable)) : 0;
   const relief = itaxRelief + niSaved + rasAtSource;
 
   // The part that must be actively claimed via self-assessment (RAS only).
@@ -938,6 +942,7 @@ function runEngine({ salary, empContrib, employerPct, dividends, savings, rental
     effectiveRate: Math.round((totalTax / Math.max(1, gross)) * 100),
     is60, gross: Math.round(gross),
     ani: Math.round(ani), userPays: Math.round(userPays),
+    excess: Math.round(excess), relievable: Math.round(relievable),
   };
 }
 
@@ -1396,9 +1401,16 @@ function updateContribEquiv() {
   const salary = getGrossSalary();
   const equiv = document.getElementById('contrib-equiv');
   if (!equiv) return;
-  equiv.textContent = (S.contribPct > 0 && salary > 0)
-    ? '= ' + fmt(salary * S.contribPct / 100) + ' / year'
-    : '';
+  if (S.contribPct > 0 && salary > 0) {
+    const amt = salary * S.contribPct / 100;
+    let msg = '= ' + fmt(amt) + ' / year';
+    if (amt > TAX.annualAllowance) {
+      msg += `. Tax relief is limited to the £${TAX.annualAllowance.toLocaleString('en-GB')} annual allowance`;
+    }
+    equiv.textContent = msg;
+  } else {
+    equiv.textContent = '';
+  }
 }
 
 function onEmployerChange() {
@@ -1420,11 +1432,21 @@ function onContribChange() {
 }
 
 function onContribGbpChange() {
-  S.contribGbp = parseFloat(document.getElementById('contrib-gbp').value) || 0;
   const salary = getGrossSalary();
+  let val = parseFloat(document.getElementById('contrib-gbp').value) || 0;
+  // Can't contribute more than you earn.
+  if (salary > 0 && val > salary) {
+    val = salary;
+    document.getElementById('contrib-gbp').value = val;
+  }
+  S.contribGbp = val;
   const equiv = document.getElementById('contrib-gbp-equiv');
-  if (equiv && S.contribGbp > 0 && salary > 0) {
-    equiv.textContent = '= ' + (S.contribGbp / salary * 100).toFixed(1) + '% of ' + incomeWord();
+  if (equiv && val > 0 && salary > 0) {
+    let msg = '= ' + (val / salary * 100).toFixed(1) + '% of ' + incomeWord();
+    if (val > TAX.annualAllowance) {
+      msg += `. Tax relief is limited to the £${TAX.annualAllowance.toLocaleString('en-GB')} annual allowance`;
+    }
+    equiv.textContent = msg;
   } else if (equiv) {
     equiv.textContent = '';
   }
