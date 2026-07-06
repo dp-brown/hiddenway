@@ -549,7 +549,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
         <button type="button" class="method-option" id="method-sacrifice" role="radio" aria-checked="false" onclick="setContribMethod('sacrifice')">
           <span class="method-option-text">
             <span class="method-option-title">Salary sacrifice</span>
-            <span class="method-option-sub">My salary is reduced and my employer pays in the difference</span>
+            <span class="method-option-sub">My salary is reduced and my employer pays in the difference (salary sacrifice)</span>
           </span>
           <span class="method-radio" aria-hidden="true"></span>
         </button>
@@ -563,7 +563,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
         <button type="button" class="method-option" id="method-ras" role="radio" aria-checked="false" onclick="setContribMethod('ras')">
           <span class="method-option-text">
             <span class="method-option-title">I pay in myself</span>
-            <span class="method-option-sub">I move money into my pension myself, for example into a SIPP or personal pension</span>
+            <span class="method-option-sub">I move money into my pension myself, for example a SIPP or personal pension (relief at source)</span>
           </span>
           <span class="method-radio" aria-hidden="true"></span>
         </button>
@@ -1527,16 +1527,24 @@ function renderResults() {
     E.textContent = "You earn over £100,000, but what you pay into your pension brings your income, as HMRC measures it, back under the threshold. Your full personal allowance is intact.";
     setNudge("Use the slider below to see what a higher or lower contribution would do.");
   } else if (canEscape) {
+    const topUp = ownContrib > 0;
+    const paLost = Math.max(0, TAX.pa - engCurrent.pa);   // allowance lost at their current contribution
     if (method === 'ras') {
-      H.innerHTML = `A <strong>${fmt(escapeGap)}</strong> pension contribution really costs you <strong>${fmt(escapeRealCost)}</strong>. You pay in ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back through your tax return.`;
+      H.innerHTML = topUp
+        ? `Paying in <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong>. You add ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back through your tax return.`
+        : `A <strong>${fmt(escapeGap)}</strong> pension contribution really costs you <strong>${fmt(escapeRealCost)}</strong>. You pay in ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back through your tax return.`;
     } else if (method === 'sacrifice') {
-      H.innerHTML = `Sacrificing <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`;
+      H.innerHTML = topUp
+        ? `Sacrificing <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`
+        : `Sacrificing <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`;
     } else {
-      H.innerHTML = `Paying in <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong>. The tax saving happens automatically in your pay.`;
+      H.innerHTML = topUp
+        ? `Paying in <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong>. The tax saving happens automatically in your pay.`
+        : `Paying in <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong>. The tax saving happens automatically in your pay.`;
     }
     E.textContent = bandB
-      ? "Once you earn over £100,000, HMRC quietly takes away your tax-free personal allowance, bit by bit, as you earn more. It means part of your income is taxed at around 60%. Far more than you'd expect."
-      : "Once you earn over £125,140, HMRC has taken your whole tax-free personal allowance. Paying into a pension brings it back, and part of what you put in saves you around 60% in tax.";
+      ? `Right now you're losing ${fmt(paLost)} of your tax-free personal allowance. HMRC takes it away bit by bit as your income climbs above £100,000, so part of your income is taxed at around 60%. The contribution above brings the allowance back.`
+      : "You've lost your whole £12,570 tax-free personal allowance to the £100,000 taper. Paying into a pension brings it back, and part of what you put in saves you around 60% in tax.";
     setNudge('');
   } else { // bandD
     H.innerHTML = "You can't fully escape the trap this year, but paying in still pays off.";
