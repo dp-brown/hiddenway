@@ -1131,6 +1131,7 @@ function setActiveStep(n) {
     if (i === n) el.classList.add('entered', 'active');
     else if (i < n) el.classList.add('completed');
   }
+  updateTrapConclusion();
 }
 
 function updateAnswerRows() {
@@ -1877,6 +1878,13 @@ function resetForm() {
 // INIT
 // ═══════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
+  // Stop the mouse wheel changing a focused number input, which silently
+  // mutated income and contribution values on scroll. Prevent the step only
+  // while the field is focused; the page still scrolls.
+  document.querySelectorAll('input[type="number"]').forEach(inp => {
+    inp.addEventListener('wheel', e => { if (document.activeElement === inp) e.preventDefault(); }, { passive: false });
+  });
+
   // Hero and all five steps show on load. Step 1 active, rest dimmed.
   document.getElementById('hero-section').style.display = 'block';
   document.getElementById('main-form').style.display = 'block';
