@@ -154,6 +154,10 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 
 /* Trap warning */
 .trap-warn { background: var(--terra-light); border: 1px solid var(--terra-border); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: #7c3a1e; margin-top: 14px; font-weight: 500; line-height: 1.5; display: none; }
+.trap-conclusion { border-radius: 14px; padding: 16px 18px; font-size: 15px; line-height: 1.6; margin: 4px 0 24px; font-weight: 500; }
+.trap-conclusion[hidden] { display: none; }
+.trap-conclusion.in-trap { background: var(--terra-light); border: 1px solid var(--terra-border); color: #7c3a1e; }
+.trap-conclusion.clear { background: #eef3ef; border: 1px solid #cddbd0; color: #2f5641; }
 
 /* Continue button */
 .btn-continue { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; background: var(--btn-bg); color: var(--btn-fg); border: none; border-radius: 999px; font-family: var(--sans); font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 24px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
@@ -446,7 +450,6 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
           </div>
           <button class="salary-adj-btn" onclick="adjustSalary(1000)" aria-label="Increase by £1,000">+</button>
         </div>
-        <div class="trap-warn" id="trap-warn">⚡ Your income is in the 60% trap zone. HMRC is quietly removing your personal allowance. This tool shows you exactly how to escape.</div>
       </div>
     </div>
 
@@ -458,7 +461,6 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
           <span class="input-pre">£</span>
           <input type="number" class="big-input" id="self-income" inputmode="numeric" aria-label="Annual self-employment profit in pounds" oninput="onSelfIncomeChange()">
         </div>
-        <div class="trap-warn" id="trap-warn-self">⚡ Your income is in the 60% trap zone. HMRC is quietly removing your personal allowance. This tool shows you exactly how to escape.</div>
       </div>
     </div>
 
@@ -518,6 +520,8 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     </div>
     <button class="btn-step" id="step3-continue" onclick="completeStep(3)">Continue</button>
   </div>
+
+  <div class="trap-conclusion" id="trap-conclusion" hidden></div>
 
   <!-- ── STEP 4: PENSION ── -->
   <div class="step-card" id="step4" tabindex="-1">
@@ -1141,6 +1145,7 @@ function updateAnswerRows() {
   document.getElementById('step4-answer').textContent = S.contribMode === 'pct'
     ? S.contribPct + '% of ' + incomeWord() + ' (' + fmt(contrib) + '/yr)'
     : fmt(contrib) + ' per year';
+  updateTrapConclusion();
   if (!_rendering) refreshIfShown();
 }
 
@@ -1185,9 +1190,6 @@ function setEarningType(type) {
     });
     document.getElementById('step2-answer-row').style.display = 'none';
     document.getElementById('step2-continue').style.display = 'none';
-    ['trap-warn','trap-warn-self'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.style.display = 'none';
-    });
     updateAnswerRows();
     // Reset the owner-check state so switching type doesn't carry over an answer
     document.getElementById('not-supported-card').style.display = 'none';
@@ -1296,15 +1298,30 @@ function setOwnerAnswer(isOwner) {
 // ═══════════════════════════════════════════
 // INCOME INPUTS
 // ═══════════════════════════════════════════
-function checkTrap(income, warnId) {
-  const inTrap = income > 100000 && income <= 125140;
-  const el = document.getElementById(warnId);
-  if (el) el.style.display = inTrap ? 'block' : 'none';
+// Conclusion banner after Step 3, based on adjusted net income (all income minus
+// current contribution), not salary alone. Shown once Step 3 is complete.
+function updateTrapConclusion() {
+  const el = document.getElementById('trap-conclusion');
+  if (!el) return;
+  if (activeStep < 4) { el.hidden = true; return; }
+  const gross = getGrossSalary() + S.dividends + S.savings + S.rental;
+  const ani = Math.max(0, gross - getCurrentContrib());
+  el.classList.remove('in-trap', 'clear');
+  if (ani > 100000 && ani <= 125140) {
+    el.className = 'trap-conclusion in-trap';
+    el.textContent = `Your income after pension is ${fmt(ani)}. That puts you in the 60% trap: HMRC removes £1 of your personal allowance for every £2 above £100,000. The next steps show how to escape it.`;
+  } else if (ani > 125140) {
+    el.className = 'trap-conclusion in-trap';
+    el.textContent = `Your income after pension is ${fmt(ani)}. You're above the trap and have lost your whole personal allowance. A pension contribution can bring some of it back.`;
+  } else {
+    el.className = 'trap-conclusion clear';
+    el.textContent = `Your income after pension is ${fmt(ani)}. You're below the £100,000 trap. The tool still works: you'll see standard higher-rate relief.`;
+  }
+  el.hidden = false;
 }
 
 function onSalaryChange() {
   S.salary = parseFloat(document.getElementById('salary-input').value) || 0;
-  checkTrap(S.salary, 'trap-warn');
   document.getElementById('step2-continue').style.display = S.salary > 0 ? 'flex' : 'none';
   updateContribEquiv();
   updateAnswerRows();
@@ -1312,7 +1329,6 @@ function onSalaryChange() {
 
 function onSelfIncomeChange() {
   S.selfIncome = parseFloat(document.getElementById('self-income').value) || 0;
-  checkTrap(S.selfIncome, 'trap-warn-self');
   document.getElementById('step2-continue').style.display = S.selfIncome > 0 ? 'flex' : 'none';
   updateAnswerRows();
 }
@@ -1322,7 +1338,6 @@ function adjustSalary(delta) {
   const val = Math.min(500000, Math.max(0, (S.salary || 0) + delta));
   S.salary = val;
   inp.value = val;
-  checkTrap(val, 'trap-warn');
   document.getElementById('step2-continue').style.display = val > 0 ? 'flex' : 'none';
   updateContribEquiv();
   updateAnswerRows();
