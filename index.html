@@ -1666,7 +1666,7 @@ function renderResults() {
   const notchWrap = document.getElementById('slider-notch-wrap');
   const escapeRef = Math.min(escapeTotal, 60000);
   const sliderMax = Math.min(60000, Math.ceil((Math.max(escapeRef, ownContrib, salary * 0.3) * 1.3) / 1000) * 1000) || 50000;
-  const showEscapeNotch = canEscape && escapeTotal <= sliderMax;
+  const showEscapeNotch = escapeTotal > 0 && escapeTotal <= sliderMax;
   let anyNotch = false;
   if (showEscapeNotch) {
     const escapePct = Math.min(98, Math.max(2, (escapeTotal / sliderMax) * 100));
