@@ -136,8 +136,11 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .method-radio { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--stone-400); position: relative; transition: border-color 0.15s; }
 .method-option.active .method-radio { border-color: var(--terra); }
 .method-option.active .method-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--terra); }
-.method-error { font-size: 13px; font-weight: 600; color: var(--terra-text); margin-top: 8px; }
+.method-error { font-size: 13px; font-weight: 600; color: var(--terra-text); margin-bottom: 10px; }
 .method-error[hidden] { display: none; }
+.method-group.flash { animation: methodflash 0.9s ease; }
+@keyframes methodflash { 0%, 100% { background: transparent; } 30% { background: var(--terra-light); } }
+@media (prefers-reduced-motion: reduce) { .method-group.flash { animation: none; } }
 
 /* Disclosure — one pattern */
 .disclosure { margin-top: var(--note-space); }
@@ -545,6 +548,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <!-- Contribution method — employed path only, no default -->
     <div class="method-group" id="contrib-method-group" style="display:none">
       <div class="input-label">How do you contribute?</div>
+      <div class="method-error" id="method-error" hidden>Choose how you contribute to see your results.</div>
       <div class="method-options" role="radiogroup" aria-label="How do you contribute?">
         <button type="button" class="method-option" id="method-sacrifice" role="radio" aria-checked="false" onclick="setContribMethod('sacrifice')">
           <span class="method-option-text">
@@ -568,7 +572,6 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
           <span class="method-radio" aria-hidden="true"></span>
         </button>
       </div>
-      <div class="method-error" id="method-error" hidden>Choose how you contribute to see your results.</div>
       <details class="disclosure">
         <summary>Not sure which you have?</summary>
         <p>Check a payslip. If your pension line reduces your gross salary, it's salary sacrifice. If it's deducted before tax is calculated, it's from pay before tax. If you transfer money in yourself, your provider adds basic rate tax relief and you claim the rest through your tax return.</p>
@@ -1285,7 +1288,7 @@ function setOwnerAnswer(isOwner) {
 // INCOME INPUTS
 // ═══════════════════════════════════════════
 function checkTrap(income, warnId) {
-  const inTrap = income >= 100000 && income <= 125140;
+  const inTrap = income > 100000 && income <= 125140;
   const el = document.getElementById(warnId);
   if (el) el.style.display = inTrap ? 'block' : 'none';
 }
@@ -1431,11 +1434,16 @@ function showResults() {
   if (!salary || salary < 1000) { flagStep('step2', 'step2-error'); return; }
   const ownContrib = getCurrentContrib();
   if (S.earningType === 'paye' && ownContrib > 0 && !S.contribMethod) {
-    const err = document.getElementById('method-error');
-    if (err) err.hidden = false;
     setActiveStep(4);
+    const err = document.getElementById('method-error');
     const grp = document.getElementById('contrib-method-group');
-    (err || grp)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (err) err.hidden = false;
+    if (grp) {
+      grp.classList.remove('flash');
+      void grp.offsetWidth;
+      grp.classList.add('flash');
+    }
+    document.getElementById('step4')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
 
@@ -1548,6 +1556,10 @@ function renderResults() {
       H.innerHTML = topUp
         ? `Sacrificing <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`
         : `Sacrificing <strong>${fmt(escapeGap)}</strong> really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`;
+    } else if (!method) {
+      H.innerHTML = topUp
+        ? `Paying in <strong>${fmt(escapeGap)}</strong> more than you do now brings your income back under £100,000 and restores your allowance.`
+        : `Paying <strong>${fmt(escapeGap)}</strong> into a pension brings your income back under £100,000 and restores your full allowance.`;
     } else {
       H.innerHTML = topUp
         ? `Paying in <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong>. The tax saving happens automatically in your pay.`
