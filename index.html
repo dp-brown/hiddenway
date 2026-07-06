@@ -656,7 +656,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
     <!-- Section break: modelling is a new phase -->
     <div class="results-break">
       <h2 class="results-break-heading">Now model your contribution</h2>
-      <p class="results-break-sub">Drag the slider to see how different amounts change your take-home, tax and pot. Everything below updates live.</p>
+      <p class="results-break-sub" id="results-break-sub">Drag the slider to see how different amounts change your take-home, tax and pot. Everything below updates live.</p>
     </div>
 
     <!-- Slider -->
@@ -1442,9 +1442,9 @@ function showResults() {
   const escapeTotal = Math.max(0, grossIncome - 100000);
   const adjNetIncome = grossIncome - ownContrib;
 
-  // Slider starts where escape is achievable; for very high earners, start from current.
-  const canFullyEscape = escapeTotal > 0 && (adjNetIncome - 100000) <= 60000;
-  S.sliderContrib = canFullyEscape ? escapeTotal : (escapeTotal > 0 ? ownContrib : ownContrib);
+  // Slider opens on the user's current contribution: show where they are, then let them explore.
+  // The escape amount is marked on the track as the target.
+  S.sliderContrib = ownContrib;
 
   document.getElementById('results').classList.add('show');
   setActiveStep(5);
@@ -1502,6 +1502,16 @@ function renderResults() {
 
   const assumptionsEl = document.getElementById('r-assumptions');
   if (assumptionsEl) assumptionsEl.textContent = `Projected pot assumes 5% growth a year. Take-home includes Income Tax and National Insurance. Based on ${TAX.taxYear} rates.`;
+
+  // Label the modelling block with the amount it currently shows, so it never
+  // reads as the user's live position when the slider has moved.
+  const modelSub = document.getElementById('results-break-sub');
+  if (modelSub) {
+    const atCurrent = sliderAmt === ownContrib;
+    modelSub.textContent = atCurrent
+      ? `Showing your current ${fmt(sliderAmt)} a year. Drag to see how other amounts change your take-home, tax and pot.`
+      : `Showing ${fmt(sliderAmt)} a year. Drag to compare. Everything below updates live.`;
+  }
 
   // Relief on the additional escape contribution (marginal, not from zero).
   // Tax saved comes off the bill; for RAS the provider also adds 20% at source,
