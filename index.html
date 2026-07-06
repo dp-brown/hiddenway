@@ -1304,18 +1304,17 @@ function updateTrapConclusion() {
   const el = document.getElementById('trap-conclusion');
   if (!el) return;
   if (activeStep < 4) { el.hidden = true; return; }
-  const gross = getGrossSalary() + S.dividends + S.savings + S.rental;
-  const ani = Math.max(0, gross - getCurrentContrib());
+  const income = getGrossSalary() + S.dividends + S.savings + S.rental;
   el.classList.remove('in-trap', 'clear');
-  if (ani > 100000 && ani <= 125140) {
+  if (income > 100000 && income <= 125140) {
     el.className = 'trap-conclusion in-trap';
-    el.textContent = `Your income after pension is ${fmt(ani)}. That puts you in the 60% trap: HMRC removes £1 of your personal allowance for every £2 above £100,000. The next steps show how to escape it.`;
-  } else if (ani > 125140) {
+    el.textContent = `Your total income is ${fmt(income)}. That puts you in the 60% trap: HMRC removes £1 of your personal allowance for every £2 above £100,000. The next step shows how a pension contribution escapes it.`;
+  } else if (income > 125140) {
     el.className = 'trap-conclusion in-trap';
-    el.textContent = `Your income after pension is ${fmt(ani)}. You're above the trap and have lost your whole personal allowance. A pension contribution can bring some of it back.`;
+    el.textContent = `Your total income is ${fmt(income)}. You're above the trap and have lost your whole personal allowance. A pension contribution can bring some of it back.`;
   } else {
     el.className = 'trap-conclusion clear';
-    el.textContent = `Your income after pension is ${fmt(ani)}. You're below the £100,000 trap. The tool still works: you'll see standard higher-rate relief.`;
+    el.textContent = `Your total income is ${fmt(income)}. You're below the £100,000 trap. Your pension contribution still earns higher-rate relief.`;
   }
   el.hidden = false;
 }
