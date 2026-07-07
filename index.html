@@ -581,7 +581,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
       </div>
       <details class="disclosure">
         <summary>Not sure which you have?</summary>
-        <p>Check a payslip. If your pension line reduces your gross salary, it's salary sacrifice. If it's deducted before tax is calculated, it's from pay before tax. If you transfer money in yourself, your provider adds basic rate tax relief and you claim the rest through your tax return.</p>
+        <p>Check a payslip. If your pension line reduces your gross salary, it's salary sacrifice. If it's deducted before tax is calculated, it's from pay before tax. If you transfer money in yourself, your provider adds basic rate tax relief and you claim the rest back from HMRC.</p>
       </details>
     </div>
 
@@ -1628,7 +1628,7 @@ function renderResults() {
     }
     E.textContent = "You earn over £100,000, but your pension brings your income, as HMRC measures it, back under the threshold. Your full personal allowance is intact.";
     if (cur.saRelief > 0) {
-      setNudge(`${fmt(cur.saRelief)} of that relief doesn't arrive automatically. Claim it through a self-assessment return.`);
+      setNudge(`${fmt(cur.saRelief)} of that relief doesn't arrive automatically. You claim it from HMRC, online or in a tax return if you file one.`);
     } else {
       setNudge("Use the slider below to see what a higher or lower contribution would do.");
     }
@@ -1637,8 +1637,8 @@ function renderResults() {
     const paLost = Math.max(0, TAX.pa - engCurrent.pa);   // allowance lost at their current contribution
     if (method === 'ras') {
       H.innerHTML = topUp
-        ? `Paying in <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong>. You add ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back through your tax return.`
-        : `A <strong>${fmt(escapeGap)}</strong> pension contribution really costs you <strong>${fmt(escapeRealCost)}</strong>. You pay in ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back through your tax return.`;
+        ? `Paying in <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong>. You add ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back from HMRC.`
+        : `A <strong>${fmt(escapeGap)}</strong> pension contribution really costs you <strong>${fmt(escapeRealCost)}</strong>. You pay in ${fmt(escapeUserPays)}, your provider adds ${fmt(escapeAtSource)}, and you claim <strong>${fmt(escapeTaxSaved)}</strong> back from HMRC.`;
     } else if (method === 'sacrifice') {
       H.innerHTML = topUp
         ? `Sacrificing <strong>${fmt(escapeGap)}</strong> more than you do now really costs you <strong>${fmt(escapeRealCost)}</strong> of take-home. The tax and National Insurance savings happen automatically in your pay.`
@@ -1713,7 +1713,9 @@ function renderResults() {
 
   document.getElementById('rc-label-3').textContent = modelled.method === 'sacrifice' ? 'Tax & NI relief' : 'Tax relief';
   animateVal('rc-val-3', modelled.relief, v => '£' + Math.abs(v).toLocaleString('en-GB'));
-  document.getElementById('rc-sub-3').textContent = 'this year';
+  document.getElementById('rc-sub-3').textContent = modelled.saRelief > 0
+    ? `${fmt(modelled.relief - modelled.saRelief)} automatic, ${fmt(modelled.saRelief)} to claim`
+    : 'automatic';
 
   animateVal('rc-val-4', modelledPot, v => {
     if (v >= 1000000) return '£' + (v/1000000).toFixed(1) + 'm';
@@ -1729,7 +1731,7 @@ function renderResults() {
     knowing.push({ title: 'Part of this earns no tax relief', body: `Tax relief stops at the £${TAX.annualAllowance.toLocaleString('en-GB')} annual allowance. The ${fmt(modelled.excess)} above it is still paid into your pension, but gets no relief this year.` });
   }
   if (modelled.saRelief > 0) {
-    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically. You need to claim it via a self-assessment return. Register at gov.uk/self-assessment.` });
+    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically. If you file a Self Assessment return, claim it there. If you don't, claim it from HMRC online at gov.uk/tax-on-your-private-pension/pension-tax-relief. The relief usually comes back through your tax code or as a refund.` });
   }
   if (canEscape && modelled.pa < 12570 && modelled.pa > 0) {
     knowing.push({ title: 'Your allowance is still reduced', body: `At this level you've brought back ${fmt(modelled.pa)} of your £12,570 allowance. Paying in ${fmt(Math.max(0, escapeTotal - sliderAmt))} more restores the rest.` });
@@ -1772,7 +1774,7 @@ function renderResults() {
       <div class="stat-val">${r.val}</div>
       ${r.sub ? `<div class="stat-sub">${r.sub}</div>` : ''}
     </div>`).join('')
-    + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">Self-assessment required</div><div class="sa-warn-body">${fmt(modelled.saRelief)} must be claimed via self-assessment. Register at <strong>gov.uk/self-assessment</strong>.</div></div>` : '')
+    + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">You claim this part yourself</div><div class="sa-warn-body">${fmt(modelled.saRelief)} doesn't arrive automatically. Claim it from HMRC online, or in your Self Assessment return if you file one. See <strong>gov.uk/tax-on-your-private-pension/pension-tax-relief</strong>.</div></div>` : '')
     + `<div class="disclaimer">Based on 2026/27 HMRC rates for England, Wales &amp; Northern Ireland. Illustrative only. Not financial advice.</div>`;
 
   // ── Feedback hidden fields ──
