@@ -266,6 +266,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
 .sa-warn { grid-column: 1 / -1; border-radius: 12px; padding: 16px; background: var(--warn-bg); border: 1px solid var(--warn-border); }
 .sa-warn-title { font-weight: 700; color: var(--stone-800); margin-bottom: 4px; font-size: 13px; }
 .sa-warn-body { font-size: 12px; color: var(--stone-600); line-height: 1.5; }
+.sa-warn-body a, .knowing-body a { color: var(--terra-text); text-decoration: underline; }
 .disclaimer { grid-column: 1 / -1; border-radius: 12px; padding: 12px; background: var(--stone-100); font-size: 11px; color: var(--stone-400); line-height: 1.5; }
 
 /* Knowing cards */
@@ -1731,7 +1732,7 @@ function renderResults() {
     knowing.push({ title: 'Part of this earns no tax relief', body: `Tax relief stops at the £${TAX.annualAllowance.toLocaleString('en-GB')} annual allowance. The ${fmt(modelled.excess)} above it is still paid into your pension, but gets no relief this year.` });
   }
   if (modelled.saRelief > 0) {
-    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically. If you file a Self Assessment return, claim it there. If you don't, claim it from HMRC online at gov.uk/tax-on-your-private-pension/pension-tax-relief. The relief usually comes back through your tax code or as a refund.` });
+    knowing.push({ title: 'Claim some back yourself', body: `${fmt(modelled.saRelief)} of your tax relief won't arrive automatically. If you file a Self Assessment return, claim it there. If you don't, claim it from HMRC online at <a href="https://www.gov.uk/tax-on-your-private-pension/pension-tax-relief" target="_blank" rel="noopener">gov.uk/tax-on-your-private-pension/pension-tax-relief</a>. The relief usually comes back through your tax code or as a refund.` });
   }
   if (canEscape && modelled.pa < 12570 && modelled.pa > 0) {
     knowing.push({ title: 'Your allowance is still reduced', body: `At this level you've brought back ${fmt(modelled.pa)} of your £12,570 allowance. Paying in ${fmt(Math.max(0, escapeTotal - sliderAmt))} more restores the rest.` });
@@ -1766,7 +1767,7 @@ function renderResults() {
   if (modelled.st > 0) rows.push({ label: 'Savings tax', val: fmt(modelled.st) });
   rows.push({ label: 'Adjusted net income', val: fmt(modelled.ani), sub: 'What your personal allowance is based on' });
   rows.push({ label: 'Personal allowance', val: fmt(modelled.pa), sub: modelled.is60 ? 'Tapered ⚡' : 'Full' });
-  rows.push({ label: 'Tax relief', val: fmt(modelled.relief) });
+  rows.push({ label: 'Tax relief', val: fmt(modelled.relief), sub: modelled.saRelief > 0 ? `${fmt(modelled.relief - modelled.saRelief)} automatic, ${fmt(modelled.saRelief)} to claim` : 'automatic' });
 
   document.getElementById('r-breakdown-grid').innerHTML =
     rows.map(r => `<div class="stat-card${r.color ? ' bar-match' : ''}" ${r.color ? `style="border-left-color:${r.color};"` : ''}>
@@ -1774,7 +1775,7 @@ function renderResults() {
       <div class="stat-val">${r.val}</div>
       ${r.sub ? `<div class="stat-sub">${r.sub}</div>` : ''}
     </div>`).join('')
-    + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">You claim this part yourself</div><div class="sa-warn-body">${fmt(modelled.saRelief)} doesn't arrive automatically. Claim it from HMRC online, or in your Self Assessment return if you file one. See <strong>gov.uk/tax-on-your-private-pension/pension-tax-relief</strong>.</div></div>` : '')
+    + (modelled.saRelief > 0 ? `<div class="sa-warn"><div class="sa-warn-title">Some tax relief you claim yourself</div><div class="sa-warn-body">${fmt(modelled.saRelief)} doesn't arrive automatically. Claim it from HMRC online, or in your Self Assessment return if you file one. See <a href="https://www.gov.uk/tax-on-your-private-pension/pension-tax-relief" target="_blank" rel="noopener"><strong>gov.uk/tax-on-your-private-pension/pension-tax-relief</strong></a>.</div></div>` : '')
     + `<div class="disclaimer">Based on 2026/27 HMRC rates for England, Wales &amp; Northern Ireland. Illustrative only. Not financial advice.</div>`;
 
   // ── Feedback hidden fields ──
