@@ -644,7 +644,7 @@ input[type=range].hidden-range::-moz-range-thumb { width: 40px; height: 40px; bo
 
   <!-- ── FORM SUBMIT ── -->
   <div class="form-submit" id="form-submit">
-    <button class="btn-continue" onclick="showResults()">See my results</button>
+    <button class="btn-continue" onclick="showResults()" data-goatcounter-click="calculate-clicked" data-goatcounter-title="See my results">See my results</button>
   </div>
 
   <!-- ── RESULTS ── -->
@@ -1766,7 +1766,7 @@ function renderResults() {
   if (modelled.dt > 0) rows.push({ label: 'Dividend tax', val: fmt(modelled.dt) });
   if (modelled.st > 0) rows.push({ label: 'Savings tax', val: fmt(modelled.st) });
   rows.push({ label: 'Adjusted net income', val: fmt(modelled.ani), sub: 'What your personal allowance is based on' });
-  rows.push({ label: 'Personal allowance', val: fmt(modelled.pa), sub: modelled.is60 ? 'Tapered ⚡' : 'Full' });
+  rows.push({ label: 'Personal allowance', val: fmt(modelled.pa), sub: modelled.pa >= 12570 ? 'Full' : modelled.pa > 0 ? 'Tapered ⚡' : 'Fully removed' });
   rows.push({ label: 'Tax relief', val: fmt(modelled.relief), sub: modelled.saRelief > 0 ? `${fmt(modelled.relief - modelled.saRelief)} automatic, ${fmt(modelled.saRelief)} to claim` : 'automatic' });
 
   document.getElementById('r-breakdown-grid').innerHTML =
